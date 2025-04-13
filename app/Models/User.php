@@ -12,18 +12,21 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'email', 'password', 'role'
+        'name', 
+        'email', 
+        'password', 
+        'role'
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 
+        'remember_token',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    // Ejemplo de relación: un usuario puede tener muchas fichas médicas
     public function fichas()
     {
         return $this->hasMany(FichaMedica::class);

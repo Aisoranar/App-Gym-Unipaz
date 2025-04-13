@@ -10,10 +10,28 @@ class FichaMedica extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'apellidos', 'nombre', 'fecha_nacimiento', 'edad', 'sexo', 'domicilio',
-        'barrio', 'telefonos', 'tipo_sangre', 'factor_rh', 'lateralidad', 'actividad_fisica',
-        'frecuencia_semanal', 'nombre_padre', 'nombre_madre', 'nombre_acudiente', 'parentesco',
-        'lesiones', 'alergias', 'padece_enfermedad', 'enfermedad'
+        'user_id', 
+        'apellidos', 
+        'nombre', 
+        'fecha_nacimiento', 
+        'edad', 
+        'sexo', 
+        'domicilio',
+        'barrio', 
+        'telefonos', 
+        'tipo_sangre', 
+        'factor_rh', 
+        'lateralidad', 
+        'actividad_fisica',
+        'frecuencia_semanal', 
+        'nombre_padre', 
+        'nombre_madre', 
+        'nombre_acudiente', 
+        'parentesco',
+        'lesiones', 
+        'alergias', 
+        'padece_enfermedad', 
+        'enfermedad'
     ];
 
     public function user()

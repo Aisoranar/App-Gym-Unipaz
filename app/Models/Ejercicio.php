@@ -10,8 +10,13 @@ class Ejercicio extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'nombre_ejercicio', 'descripcion', 'series',
-        'repeticiones', 'duracion', 'fecha'
+        'user_id', 
+        'nombre_ejercicio', 
+        'descripcion', 
+        'series',
+        'repeticiones', 
+        'duracion', 
+        'fecha'
     ];
 
     public function user()

@@ -17,7 +17,6 @@ class Asistencia extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Eliminamos relación con Rutina
     public function ejercicio()
     {
         return $this->belongsTo(Ejercicio::class);

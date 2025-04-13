@@ -62,6 +62,11 @@
         </div>
     </div>
     
+    <!-- Botón para editar la ficha médica -->
+    <a href="{{ route('fichas.edit', $ficha) }}" class="btn btn-warning mb-3">
+        <i class="fa-solid fa-edit"></i> Editar Ficha Médica
+    </a>
+    
     <a href="{{ route('fichas.index') }}" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i> Volver a la lista
     </a>

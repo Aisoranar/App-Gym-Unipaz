@@ -4,9 +4,9 @@
 
 <style>
   :root {
-    --primary: #001f3f;   /* Azul oscuro */
-    --secondary: #013220; /* Verde oscuro */
-    --bg-dark: #000814;   /* Fondo muy oscuro */
+    --primary: #001f3f;
+    --secondary: #013220;
+    --bg-dark: #000814;
     --white: #ffffff;
   }
   body {
@@ -14,7 +14,6 @@
     color: var(--white);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-  /* Fondo animado */
   .animated-bg {
     background: linear-gradient(45deg, var(--primary), var(--secondary));
     background-size: 400% 400%;
@@ -25,24 +24,30 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-  /* Encabezado */
   .header-index {
     padding: 2rem 0;
     text-align: center;
-    position: relative;
   }
   .header-index h1 {
     font-weight: bold;
     font-size: 2.5rem;
   }
-  /* Grilla para las tarjetas */
+  .btn-create {
+    background-color: var(--white);
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    transition: background-color 0.2s, color 0.2s;
+  }
+  .btn-create:hover {
+    background-color: var(--primary);
+    color: var(--white);
+  }
   .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-top: 2rem;
   }
-  /* Tarjeta individual */
   .card-item {
     background: var(--primary);
     border-radius: 1rem;
@@ -65,7 +70,6 @@
     font-size: 0.95rem;
     margin-bottom: 1rem;
   }
-  /* Acciones de los botones */
   .card-actions {
     display: flex;
     justify-content: center;
@@ -76,7 +80,6 @@
     color: var(--white);
     border: none;
     padding: 0.5rem 1rem;
-    border-radius: 0;
     transition: background 0.3s;
   }
   .btn-custom:hover {
@@ -88,21 +91,30 @@
   }
 </style>
 
-<!-- Encabezado con fondo animado -->
 <div class="animated-bg header-index">
-  <h1>Rutinas</h1>
-  <a href="{{ route('rutinas.create') }}" class="btn btn-custom mt-3">
+  <h1>Mis Rutinas</h1>
+  <a href="{{ route('rutinas.create') }}" class="btn btn-create mt-3">
     <i class="fa-solid fa-plus"></i> Crear Nueva Rutina
   </a>
 </div>
 
-<!-- Contenedor organizado en columnas -->
 <div class="container py-4">
   <div class="card-grid">
     @foreach($rutinas as $rutina)
       <div class="card-item">
         <h5>{{ $rutina->nombre }}</h5>
-        <p><strong>Días por Semana:</strong> {{ $rutina->dias_por_semana }}</p>
+        <p>
+          <strong>Fecha Inicio:</strong> 
+          {{ $rutina->fecha_inicio ? \Carbon\Carbon::parse($rutina->fecha_inicio)->format('d/m/Y') : 'No definida' }}
+        </p>
+        <p>
+          <strong>Fecha Fin:</strong> 
+          {{ $rutina->fecha_fin ? \Carbon\Carbon::parse($rutina->fecha_fin)->format('d/m/Y') : 'No definida' }}
+        </p>
+        <p>
+          <strong>Días:</strong> 
+          {{ $rutina->dias ? (is_array($rutina->dias) ? implode(', ', $rutina->dias) : $rutina->dias) : 'No especificado' }}
+        </p>
         <div class="card-actions">
           <a href="{{ route('rutinas.show', $rutina) }}" class="btn btn-custom btn-sm" title="Ver">
             <i class="fa-solid fa-eye"></i> Ver

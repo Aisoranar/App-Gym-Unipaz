@@ -149,8 +149,8 @@
           </button>
 
           <a href="{{ route('fichas.index') }}" class="btn btn-secondary">
-        <i class="fa-solid fa-arrow-left"></i> Volver a la lista
-    </a>
+            <i class="fa-solid fa-arrow-left"></i> Volver a la lista
+          </a>
       </div>
 
     </form>

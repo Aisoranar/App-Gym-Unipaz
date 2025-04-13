@@ -10,7 +10,11 @@ class PlanNutricional extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'nombre', 'descripcion', 'calorias_diarias', 'recomendaciones'
+        'user_id', 
+        'nombre', 
+        'descripcion', 
+        'calorias_diarias', 
+        'recomendaciones'
     ];
 
     public function user()

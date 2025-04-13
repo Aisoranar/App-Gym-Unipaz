@@ -48,7 +48,9 @@
                     <label for="nombre">Nombre</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="fa-solid fa-id-badge"></i></span>
-                        <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                        <!-- Se muestra el nombre del usuario autenticado, sin posibilidad de edición -->
+                        <input type="text" name="nombre_disabled" id="nombre_disabled" class="form-control" value="{{ Auth::user()->name }}" disabled>
+                        <input type="hidden" name="nombre" value="{{ Auth::user()->name }}">
                     </div>
                 </div>
                 <div class="col-md-4 col-lg-2">
@@ -222,8 +224,8 @@
             </button>
         </div>
         <a href="{{ route('fichas.index') }}" class="btn btn-secondary">
-        <i class="fa-solid fa-arrow-left"></i> Volver a la lista
-    </a>
+            <i class="fa-solid fa-arrow-left"></i> Volver a la lista
+        </a>
 
     </form>
     

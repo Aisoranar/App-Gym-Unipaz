@@ -10,7 +10,22 @@ class Rutina extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'nombre', 'descripcion', 'dias_por_semana'
+        'user_id', 
+        'nombre', 
+        'descripcion', 
+        'dias',             // Se actualiza para que coincida con el nombre en la BD
+        'fecha_inicio',     // Fecha en la que inicia la rutina
+        'fecha_fin',        // Fecha en la que se espera finalizar o reevaluar la rutina
+        'hora_inicio',      // Hora de inicio de cada sesión
+        'hora_fin',         // Hora de término de cada sesión
+        'estado',           // Estado de la rutina (pendiente, en curso, finalizada)
+        'objetivo',         // Meta u objetivo de la rutina (ej. ganar masa muscular)
+        'intensidad',       // Intensidad (baja, media, alta)
+        'notas'             // Notas o comentarios adicionales
+    ];
+
+    protected $casts = [
+        'dias' => 'array',   // Se castea a array para guardar la información en la columna JSON
     ];
 
     public function user()
