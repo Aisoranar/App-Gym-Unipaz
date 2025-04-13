@@ -139,6 +139,34 @@
       opacity: 0;
       visibility: hidden;
     }
+    /* Estilos para el submenu */
+.submenu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: none; /* oculto por defecto */
+  background-color: #112240;
+}
+
+li:hover > .submenu {
+  display: block; /* se muestra al posicionarse sobre el elemento padre */
+}
+
+.submenu li {
+  margin: 0;
+}
+
+.submenu li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--white);
+  text-decoration: none;
+}
+
+.submenu li a:hover {
+  background-color: #64ffda;
+  color: var(--bg-dark);
+}
 
     /* --------------------------------- */
     /* Top Navbar: Mobile-first */
@@ -297,12 +325,23 @@
             <span class="menu-text">Plan Nutricional</span>
           </a>
         </li>
+
         <li>
           <a href="{{ route('clases.index') }}">
             <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
             <span class="menu-text">Clases</span>
           </a>
+          <ul class="submenu">
+            <li>
+              <a href="{{ route('clases.index') }}">Lista de Clases</a>
+            </li>
+            <li>
+              <a href="{{ route('clases.historial') }}">Historial de Clases</a>
+            </li>
+          </ul>
         </li>
+
+
         <li>
           <a href="{{ route('asistencias.calendario') }}">
             <i class="fas fa-calendar-check" aria-hidden="true"></i>

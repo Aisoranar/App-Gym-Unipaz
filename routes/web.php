@@ -63,6 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('planes', PlanNutricionalController::class);
 
     // Clases grupales
+    // Primero definimos la ruta para el historial de clases para que no
+    // sea interpretada como un parámetro en el resource.
+    Route::get('clases/historial', [ClaseController::class, 'historial'])->name('clases.historial');
+    // Luego definimos las rutas resource y adicionales
     Route::resource('clases', ClaseController::class);
     Route::post('clases/{clase}/join', [ClaseController::class, 'join'])->name('clases.join');
     Route::post('clases/{clase}/leave', [ClaseController::class, 'leave'])->name('clases.leave');

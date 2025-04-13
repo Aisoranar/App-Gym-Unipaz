@@ -39,4 +39,9 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Clase::class, 'clase_user')->withTimestamps();
     }
+
+    public function participaciones()
+{
+    return $this->belongsToMany(\App\Models\Clase::class, 'clase_user')->withTimestamps();
+}
 }
