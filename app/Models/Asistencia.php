@@ -9,10 +9,17 @@ class Asistencia extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'fecha'];
+    // Eliminamos 'rutina_id' y agregamos 'ejercicio_id'
+    protected $fillable = ['user_id', 'fecha', 'ejercicio_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Eliminamos relación con Rutina
+    public function ejercicio()
+    {
+        return $this->belongsTo(Ejercicio::class);
     }
 }
