@@ -2,7 +2,6 @@
 @section('title', 'Crear Recomendación')
 @section('content')
 
-<!-- Estilos personalizados compartidos -->
 <style>
     .form-section {
         background: #f8f9fa;
@@ -33,7 +32,7 @@
       @csrf
       
       <div class="form-section">
-          <h5><i class="fa-solid fa-info-circle"></i> Contenido y Fecha</h5>
+          <h5><i class="fa-solid fa-info-circle"></i> Contenido, Fecha y Destinatario</h5>
           <div class="row g-3">
               <div class="col-12">
                   <label for="contenido">Contenido</label>
@@ -48,6 +47,15 @@
                       <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
                       <input type="date" name="fecha" id="fecha" class="form-control" required>
                   </div>
+              </div>
+              <div class="col-md-6">
+                  <label for="user_id">Asignar a Usuario</label>
+                  <select name="user_id" id="user_id" class="form-select" required>
+                      <option value="">Selecciona un usuario</option>
+                      @foreach($usuarios as $usuario)
+                          <option value="{{ $usuario->id }}">{{ $usuario->name }}</option>
+                      @endforeach
+                  </select>
               </div>
           </div>
       </div>

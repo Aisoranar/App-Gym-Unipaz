@@ -31,4 +31,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(FichaMedica::class);
     }
+
+    /**
+     * Relación a las clases en las que el usuario está inscrito.
+     */
+    public function clasesParticipadas()
+    {
+        return $this->belongsToMany(Clase::class, 'clase_user')->withTimestamps();
+    }
 }

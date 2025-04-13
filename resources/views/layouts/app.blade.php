@@ -10,20 +10,13 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <!-- Incluye FontAwesome para los íconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
-    <!-- Bootstrap Bundle JS (incluye Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoA1X6VjOeiBQ8tM0Hn7GZ0eU56fnq9Y4GEqAXe1l49QK3HiT0S6HDy8Fq1GL4G9" crossorigin="anonymous"></script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
-
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!-- Bootstrap Bundle JS (incluye Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoA1X6VjOeiBQ8tM0Hn7GZ0eU56fnq9Y4GEqAXe1l49QK3HiT0S6HDy8Fq1GL4G9" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <!-- Estilos en línea: Mobile-first, variables y transiciones -->
   <style>
@@ -179,6 +172,14 @@
     .top-navbar h4 {
       font-size: 1.3rem;
       color: var(--text-color);
+      margin: 0;
+    }
+    .top-navbar .logout-form button {
+      border: none;
+      background: none;
+      color: red;
+      font-weight: bold;
+      cursor: pointer;
     }
 
     /* --------------------------------- */
@@ -253,87 +254,112 @@
   </style>
 </head>
 <body>
-  <!-- Sidebar: Menú lateral -->
-  <nav id="sidebar" aria-label="Menú de navegación">
-    <div class="sidebar-header">
-      <i class="fas fa-dumbbell" aria-hidden="true"></i>
-      <span>Menú</span>
-    </div>
-    <ul class="components">
-      <li>
-        <a href="{{ route('fichas.index') }}">
-          <i class="fas fa-file-medical" aria-hidden="true"></i>
-          <span class="menu-text">Ficha Médica</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('ejercicios.index') }}">
-          <i class="fas fa-dumbbell" aria-hidden="true"></i>
-          <span class="menu-text">Ejercicios</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('recomendaciones.index') }}">
-          <i class="fas fa-notes-medical" aria-hidden="true"></i>
-          <span class="menu-text">Recomendaciones</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('rutinas.index') }}">
-          <i class="fas fa-running" aria-hidden="true"></i>
-          <span class="menu-text">Rutinas</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('planes.index') }}">
-          <i class="fas fa-apple-alt" aria-hidden="true"></i>
-          <span class="menu-text">Plan Nutricional</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('clases.index') }}">
-          <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
-          <span class="menu-text">Clases</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('asistencias.calendario') }}">
-          <i class="fas fa-calendar-check" aria-hidden="true"></i>
-          <span class="menu-text">Calendario Gym</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+  @php
+    // Se obtiene el nombre de la ruta actual.
+    $currentRoute = Route::currentRouteName();
+  @endphp
 
-  <!-- Contenido Principal -->
-  <div id="content">
-    <nav class="top-navbar">
-      <!-- Botón para móviles: muestra/oculta el sidebar móvil -->
-      <button type="button" id="mobileToggle" class="btn-hamburger" aria-label="Abrir menú">
-        <i class="fas fa-bars"></i>
-      </button>
-      <!-- Botón para escritorio: colapsar/expandir el sidebar -->
-      <span id="desktopToggle" class="desktop-toggle" aria-label="Colapsar menú">
-        <i class="fas fa-angle-double-left"></i>
-      </span>
-      <h4>GymApp</h4>
+  @if(!in_array($currentRoute, ['login', 'register']))
+    <!-- Sidebar: Menú lateral -->
+    <nav id="sidebar" aria-label="Menú de navegación">
+      <div class="sidebar-header">
+        <i class="fas fa-dumbbell" aria-hidden="true"></i>
+        <span>Menú</span>
+      </div>
+      <ul class="components">
+        <li>
+          <a href="{{ route('fichas.index') }}">
+            <i class="fas fa-file-medical" aria-hidden="true"></i>
+            <span class="menu-text">Ficha Médica</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('ejercicios.index') }}">
+            <i class="fas fa-dumbbell" aria-hidden="true"></i>
+            <span class="menu-text">Ejercicios</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('recomendaciones.index') }}">
+            <i class="fas fa-notes-medical" aria-hidden="true"></i>
+            <span class="menu-text">Recomendaciones</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('rutinas.index') }}">
+            <i class="fas fa-running" aria-hidden="true"></i>
+            <span class="menu-text">Rutinas</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('planes.index') }}">
+            <i class="fas fa-apple-alt" aria-hidden="true"></i>
+            <span class="menu-text">Plan Nutricional</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('clases.index') }}">
+            <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+            <span class="menu-text">Clases</span>
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('asistencias.calendario') }}">
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+            <span class="menu-text">Calendario Gym</span>
+          </a>
+        </li>
+      </ul>
     </nav>
 
+    <!-- Contenido Principal -->
+    <div id="content">
+      <nav class="top-navbar d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <!-- Botón para móviles: muestra/oculta el sidebar móvil -->
+          <button type="button" id="mobileToggle" class="btn-hamburger" aria-label="Abrir menú">
+            <i class="fas fa-bars"></i>
+          </button>
+          <!-- Botón para escritorio: colapsar/expandir el sidebar -->
+          <span id="desktopToggle" class="desktop-toggle" aria-label="Colapsar menú">
+            <i class="fas fa-angle-double-left"></i>
+          </span>
+          <h4 class="mb-0">GymApp</h4>
+        </div>
+        @if(Auth::check())
+          <div class="logout-form">
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit">Cerrar Sesión</button>
+            </form>
+          </div>
+        @endif
+      </nav>
+
+      <div class="container" style="padding-top: 1rem;">
+        @if(session('success'))
+          <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @yield('content')
+      </div>
+    </div>
+
+    <!-- Footer para móviles (Mobile Tabs) -->
+    <div class="mobile-tabs d-md-none">
+      <a href="{{ route('fichas.index') }}"><i class="fas fa-user"></i></a>
+      <a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i></a>
+      <a href="{{ route('rutinas.index') }}"><i class="fas fa-running"></i></a>
+      <a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-alt"></i></a>
+    </div>
+  @else
+    <!-- Si la ruta es login o register, se omite el menú -->
     <div class="container" style="padding-top: 1rem;">
       @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
       @endif
       @yield('content')
     </div>
-  </div>
-
-  <!-- Footer para móviles (Mobile Tabs) -->
-  <div class="mobile-tabs d-md-none">
-    <a href="{{ route('fichas.index') }}"><i class="fas fa-user"></i></a>
-    <a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i></a>
-    <a href="{{ route('rutinas.index') }}"><i class="fas fa-running"></i></a>
-    <a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-alt"></i></a>
-  </div>
+  @endif
 
   <!-- Scripts -->
   <script src="{{ asset('js/app.js') }}"></script>
@@ -355,7 +381,6 @@
     document.getElementById('mobileToggle').addEventListener('click', function(e) {
       var sidebar = document.getElementById('sidebar');
       sidebar.classList.toggle('mobile-active');
-      // Evita la propagación para que no se cierre inmediatamente
       e.stopPropagation();
     });
 
@@ -376,15 +401,14 @@
     // Ocultar el sidebar móvil al hacer clic fuera (solo si tiene la clase mobile-active)
     document.addEventListener('click', function(e) {
       var sidebar = document.getElementById('sidebar');
-      if(sidebar.classList.contains('mobile-active')){
-        // Si el clic ocurre fuera del sidebar y del botón móvil, se oculta el sidebar
+      if(sidebar && sidebar.classList.contains('mobile-active')){
         if(!sidebar.contains(e.target) && !document.getElementById('mobileToggle').contains(e.target)) {
           sidebar.classList.remove('mobile-active');
         }
       }
     });
 
-    // Opcional: ocultar el sidebar móvil al hacer clic en alguno de sus enlaces
+    // Oculta el sidebar móvil al hacer clic en alguno de sus enlaces
     document.querySelectorAll('#sidebar ul li a').forEach(function(link) {
       link.addEventListener('click', function() {
         if(document.getElementById('sidebar').classList.contains('mobile-active')) {

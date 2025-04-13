@@ -64,6 +64,8 @@ Route::middleware('auth')->group(function () {
 
     // Clases grupales
     Route::resource('clases', ClaseController::class);
+    Route::post('clases/{clase}/join', [ClaseController::class, 'join'])->name('clases.join');
+    Route::post('clases/{clase}/leave', [ClaseController::class, 'leave'])->name('clases.leave');
 
     // Asistencia (Calendario)
     Route::get('calendario', [AsistenciaController::class, 'index'])->name('asistencias.calendario');

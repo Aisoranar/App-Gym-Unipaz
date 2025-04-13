@@ -10,7 +10,8 @@ class Recomendacion extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
+        'user_id',      // Destinatario (usuario)
+        'creado_por',   // Creador (entrenador o superadmin)
         'contenido', 
         'fecha'
     ];

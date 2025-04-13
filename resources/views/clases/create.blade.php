@@ -2,7 +2,6 @@
 @section('title', 'Crear Clase')
 @section('content')
 
-<!-- Estilos personalizados compartidos -->
 <style>
     .form-section {
         background: #f8f9fa;
@@ -29,7 +28,8 @@
     <h1 class="mb-4 text-primary fw-bold">
         <i class="fa-solid fa-calendar-plus"></i> Crear Nueva Clase
     </h1>
-    <form method="POST" action="{{ route('clases.store') }}">
+    <!-- Se añade enctype para subir archivos -->
+    <form method="POST" action="{{ route('clases.store') }}" enctype="multipart/form-data">
       @csrf
       
       <div class="form-section">
@@ -56,18 +56,56 @@
                       <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
                   </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-12">
+                  <label for="objetivos">Objetivos de la Clase</label>
+                  <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-bullseye"></i></span>
+                      <textarea name="objetivos" id="objetivos" class="form-control" placeholder="Ej: Mejorar flexibilidad y técnica de respiración"></textarea>
+                  </div>
+              </div>
+              <div class="col-md-4">
                   <label for="hora_inicio">Hora de Inicio</label>
                   <div class="input-group">
                       <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
                       <input type="time" name="hora_inicio" id="hora_inicio" class="form-control" required>
                   </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                   <label for="hora_fin">Hora de Fin (opcional)</label>
                   <div class="input-group">
                       <span class="input-group-text"><i class="fa-solid fa-clock-rotate-left"></i></span>
                       <input type="time" name="hora_fin" id="hora_fin" class="form-control">
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <label for="nivel">Nivel de la Clase</label>
+                  <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-signal"></i></span>
+                      <input type="text" name="nivel" id="nivel" class="form-control" placeholder="Ej: Principiante">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <label for="max_participantes">Máximo de Participantes</label>
+                  <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-users"></i></span>
+                      <input type="number" name="max_participantes" id="max_participantes" class="form-control" min="1">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <label for="imagen">Imagen</label>
+                  <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                      <input type="file" name="imagen" id="imagen" class="form-control">
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <label for="is_active">Estado de la Clase</label>
+                  <div class="input-group">
+                      <span class="input-group-text"><i class="fa-solid fa-toggle-on"></i></span>
+                      <select name="is_active" id="is_active" class="form-select" required>
+                          <option value="1" selected>Activa</option>
+                          <option value="0">Inactiva</option>
+                      </select>
                   </div>
               </div>
           </div>

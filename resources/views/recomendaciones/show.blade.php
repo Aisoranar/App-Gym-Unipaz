@@ -50,7 +50,6 @@
   }
 </style>
 
-<!-- Hero Section -->
 <div class="hero">
   <div class="text-center">
     <h1><i class="fa-solid fa-comment-dots"></i> Recomendación</h1>
@@ -58,7 +57,6 @@
   </div>
 </div>
 
-<!-- Contenido -->
 <div class="container my-5">
   <div class="card-neon">
     <h4 class="mb-3"><i class="fa-solid fa-info-circle"></i> Detalles de la Recomendación</h4>

@@ -13,20 +13,30 @@ class FichaMedicaController extends Controller
      * - Si el usuario es superadmin o entrenador, muestra la lista completa (listaficha).
      * - Si el usuario es normal, muestra su ficha (o redirige a crear si aún no existe).
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
+        $search = $request->get('search');
+    
         if ($user->role === 'superadmin' || $user->role === 'entrenador') {
-            $fichas = FichaMedica::orderBy('id', 'ASC')->get();
+            $query = FichaMedica::query();
+            if ($search) {
+                $query->where(function($q) use ($search) {
+                    $q->where('nombre', 'LIKE', "%{$search}%")
+                      ->orWhere('apellidos', 'LIKE', "%{$search}%");
+                });
+            }
+            $fichas = $query->orderBy('id', 'ASC')->get();
             return view('fichas.listaficha', compact('fichas'));
         }
-
+    
         $ficha = FichaMedica::where('user_id', $user->id)->first();
         if ($ficha) {
             return view('fichas.show', compact('ficha'));
         }
         return redirect()->route('fichas.create')->with('error', 'No tienes ficha médica. Por favor, crea una.');
     }
+    
 
     /**
      * Muestra el formulario para crear una ficha médica.

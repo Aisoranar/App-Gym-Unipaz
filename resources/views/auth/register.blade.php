@@ -1,40 +1,38 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 @section('title', 'Registro')
+
 @section('content')
-<div class="row justify-content-center">
-  <div class="col-md-6">
+    <i class="fas fa-user-plus auth-icon"></i>
     <h2>Registrarse</h2>
     <form method="POST" action="{{ route('register') }}">
-      @csrf
-      <div class="form-group">
-        <label for="name">Nombre</label>
-        <input type="text" name="name" id="name" class="form-control" required autofocus>
-      </div>
-      <div class="form-group">
-        <label for="email">Correo Electrónico</label>
-        <input type="email" name="email" id="email" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-      </div>
-      <div class="form-group">
-        <label for="password_confirmation">Confirmar Contraseña</label>
-        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
-      </div>
-      <!-- Opcional: selección de rol -->
-      <!--
-      <div class="form-group">
-        <label for="role">Rol</label>
-        <select name="role" id="role" class="form-control">
-          <option value="usuario" selected>Usuario</option>
-          <option value="entrenador">Entrenador</option>
-          <option value="superadmin">Superadmin</option>
-        </select>
-      </div>
-      -->
-      <button type="submit" class="btn btn-primary mt-2">Registrarse</button>
+        @csrf
+        <div class="mb-3">
+            <label for="name" class="form-label">
+                <i class="fas fa-user"></i> Nombre
+            </label>
+            <input type="text" name="name" id="name" class="form-control" required autofocus>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">
+                <i class="fas fa-envelope"></i> Correo Electrónico
+            </label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">
+                <i class="fas fa-lock"></i> Contraseña
+            </label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password_confirmation" class="form-label">
+                <i class="fas fa-lock"></i> Confirmar Contraseña
+            </label>
+            <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Registrarse</button>
     </form>
-  </div>
-</div>
+    <div class="mt-3 text-center">
+        <p>¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia sesión aquí</a></p>
+    </div>
 @endsection
