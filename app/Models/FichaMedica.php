@@ -9,6 +9,7 @@ class FichaMedica extends Model
 {
     use HasFactory;
 
+    // Los campos que se pueden asignar masivamente
     protected $fillable = [
         'user_id', 
         'apellidos', 
@@ -34,6 +35,10 @@ class FichaMedica extends Model
         'enfermedad'
     ];
 
+    /**
+     * Relación con el usuario.
+     * Cada ficha médica pertenece a un usuario.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);

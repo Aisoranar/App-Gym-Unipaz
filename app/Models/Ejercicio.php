@@ -10,22 +10,19 @@ class Ejercicio extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
-        'nombre_ejercicio', 
-        'descripcion', 
+        'user_id',
+        'nombre_ejercicio',
+        'descripcion',
+        'nivel_dificultad',
+        'grupo_muscular',
         'series',
-        'repeticiones', 
-        'duracion', 
-        'fecha'
+        'repeticiones',
+        'calorias_aprox',
+        'duracion',
+        'fecha',
+        'foto',
+        'video',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-    
-    public function rutinas()
-    {
-        return $this->belongsToMany(Rutina::class, 'ejercicio_rutina');
-    }
+    // Relaciones...
 }

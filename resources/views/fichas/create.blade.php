@@ -2,7 +2,6 @@
 @section('title', 'Crear Ficha Médica')
 @section('content')
 
-<!-- Estilos personalizados -->
 <style>
     .form-section {
         background: #f8f9fa;
@@ -33,7 +32,7 @@
     <form method="POST" action="{{ route('fichas.store') }}">
         @csrf
 
-        {{-- 🧍 Datos Personales --}}
+        {{-- Datos Personales --}}
         <div class="form-section">
             <h5><i class="fa-solid fa-user"></i> Datos Personales</h5>
             <div class="row g-3">
@@ -81,7 +80,7 @@
             </div>
         </div>
 
-        {{-- 📍 Dirección y Contacto --}}
+        {{-- Dirección y Contacto --}}
         <div class="form-section">
             <h5><i class="fa-solid fa-address-book"></i> Dirección y Contacto</h5>
             <div class="row g-3">
@@ -109,7 +108,7 @@
             </div>
         </div>
 
-        {{-- 🩺 Información Médica --}}
+        {{-- Información Médica --}}
         <div class="form-section">
             <h5><i class="fa-solid fa-user-md"></i> Información Médica</h5>
             <div class="row g-3">
@@ -182,7 +181,7 @@
             </div>
         </div>
 
-        {{-- 👨‍👩‍👧 Información Familiar --}}
+        {{-- Información Familiar --}}
         <div class="form-section">
             <h5><i class="fa-solid fa-people-group"></i> Información Familiar</h5>
             <div class="row g-3">

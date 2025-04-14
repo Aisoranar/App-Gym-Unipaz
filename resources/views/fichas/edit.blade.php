@@ -2,7 +2,6 @@
 @section('title', 'Editar Ficha Médica')
 @section('content')
 
-<!-- Estilos personalizados -->
 <style>
     .form-section {
         background: #f8f9fa;

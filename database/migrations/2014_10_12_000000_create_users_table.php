@@ -6,15 +6,12 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            // Agregamos la columna 'role' para diferenciar entre usuario, entrenador y superadmin.
+            // Columna para definir el rol del usuario: 'usuario', 'entrenador' o 'superadmin'
             $table->enum('role', ['usuario', 'entrenador', 'superadmin'])->default('usuario');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -24,9 +21,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

@@ -62,10 +62,12 @@
         </div>
     </div>
     
-    <!-- Botón para editar la ficha médica -->
-    <a href="{{ route('fichas.edit', $ficha) }}" class="btn btn-warning mb-3">
-        <i class="fa-solid fa-edit"></i> Editar Ficha Médica
-    </a>
+    <!-- Se muestra el botón de edición solo si el usuario es el dueño o tiene permisos especiales -->
+    @if(Auth::id() === $ficha->user_id || Auth::user()->role === 'superadmin' || Auth::user()->role === 'entrenador')
+        <a href="{{ route('fichas.edit', $ficha) }}" class="btn btn-warning mb-3">
+            <i class="fa-solid fa-edit"></i> Editar Ficha Médica
+        </a>
+    @endif
     
     <a href="{{ route('fichas.index') }}" class="btn btn-secondary">
         <i class="fa-solid fa-arrow-left"></i> Volver a la lista

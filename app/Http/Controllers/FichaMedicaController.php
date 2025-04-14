@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\Auth;
 class FichaMedicaController extends Controller
 {
     /**
-     * Muestra la ficha médica:
-     * - Si el usuario es superadmin o entrenador, muestra la lista completa (listaficha).
-     * - Si el usuario es normal, muestra su ficha (o redirige a crear si aún no existe).
+     * Muestra las fichas médicas:
+     * - Si el usuario es superadmin o entrenador, muestra todas (con opción de búsqueda).
+     * - Si es usuario normal, se muestra solo la ficha correspondiente o se redirige a crear en caso de no existir.
      */
     public function index(Request $request)
     {
         $user = Auth::user();
         $search = $request->get('search');
-    
+
         if ($user->role === 'superadmin' || $user->role === 'entrenador') {
             $query = FichaMedica::query();
             if ($search) {
@@ -29,18 +29,18 @@ class FichaMedicaController extends Controller
             $fichas = $query->orderBy('id', 'ASC')->get();
             return view('fichas.listaficha', compact('fichas'));
         }
-    
+
+        // Para usuario normal se obtiene solo la ficha que le pertenece.
         $ficha = FichaMedica::where('user_id', $user->id)->first();
         if ($ficha) {
             return view('fichas.show', compact('ficha'));
         }
         return redirect()->route('fichas.create')->with('error', 'No tienes ficha médica. Por favor, crea una.');
     }
-    
 
     /**
      * Muestra el formulario para crear una ficha médica.
-     * Solo se permite si el usuario aún no tiene una ficha.
+     * Solo se permite si el usuario aún no tiene ficha.
      */
     public function create()
     {
@@ -54,7 +54,7 @@ class FichaMedicaController extends Controller
 
     /**
      * Almacena una nueva ficha médica.
-     * Se establece el campo "nombre" automáticamente desde el usuario autenticado.
+     * Se asigna automáticamente el user_id y el nombre del usuario autenticado.
      */
     public function store(Request $request)
     {
@@ -66,7 +66,6 @@ class FichaMedicaController extends Controller
 
         $validated = $request->validate([
             'apellidos'         => 'required|string|max:255',
-            // En creación, el campo 'nombre' se asigna automáticamente
             'fecha_nacimiento'  => 'required|date',
             'edad'              => 'required|integer',
             'sexo'              => 'required|in:F,M',
@@ -88,21 +87,21 @@ class FichaMedicaController extends Controller
             'enfermedad'        => 'nullable|string|max:255',
         ]);
 
-        // Asigna automáticamente el user_id y el campo "nombre" del usuario autenticado
+        // Se asignan los campos que definen la relación con el usuario.
         $validated['user_id'] = Auth::id();
         $validated['nombre'] = Auth::user()->name;
 
-        FichaMedica::create($validated);
-        $ficha = FichaMedica::where('user_id', Auth::id())->first();
+        $ficha = FichaMedica::create($validated);
         return redirect()->route('fichas.show', $ficha->id)
             ->with('success', 'Ficha Médica creada correctamente.');
     }
 
     /**
-     * Muestra los detalles de una ficha médica.
+     * Muestra los detalles de la ficha médica.
      */
     public function show(FichaMedica $ficha)
     {
+        // Solo el dueño o usuarios con rol especial pueden ver la ficha.
         if ($ficha->user_id != Auth::id() && !(Auth::user()->role === 'superadmin' || Auth::user()->role === 'entrenador')) {
             abort(403, 'No tienes permiso para ver esta ficha médica.');
         }
@@ -114,6 +113,7 @@ class FichaMedicaController extends Controller
      */
     public function edit(FichaMedica $ficha)
     {
+        // Se valida que sólo el dueño o roles especiales puedan editar.
         if ($ficha->user_id != Auth::id() && !(Auth::user()->role === 'superadmin' || Auth::user()->role === 'entrenador')) {
             abort(403, 'No tienes permiso para editar esta ficha médica.');
         }
@@ -125,6 +125,7 @@ class FichaMedicaController extends Controller
      */
     public function update(Request $request, FichaMedica $ficha)
     {
+        // Se comprueba el permiso para actualizar.
         if ($ficha->user_id != Auth::id() && !(Auth::user()->role === 'superadmin' || Auth::user()->role === 'entrenador')) {
             abort(403, 'No tienes permiso para actualizar esta ficha médica.');
         }
@@ -153,6 +154,7 @@ class FichaMedicaController extends Controller
             'enfermedad'        => 'nullable|string|max:255',
         ]);
 
+        // No se permite cambiar el usuario asociado.
         $ficha->update($validated);
         return redirect()->route('fichas.show', $ficha->id)
             ->with('success', 'Ficha Médica actualizada correctamente.');
@@ -163,6 +165,7 @@ class FichaMedicaController extends Controller
      */
     public function destroy(FichaMedica $ficha)
     {
+        // Solo el dueño o roles especiales pueden eliminar la ficha.
         if ($ficha->user_id != Auth::id() && !(Auth::user()->role === 'superadmin' || Auth::user()->role === 'entrenador')) {
             abort(403, 'No tienes permiso para eliminar esta ficha médica.');
         }
