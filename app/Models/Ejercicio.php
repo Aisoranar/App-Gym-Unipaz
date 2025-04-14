@@ -24,5 +24,11 @@ class Ejercicio extends Model
         'video',
     ];
 
-    // Relaciones...
+    /**
+     * Relación: cada ejercicio pertenece a un usuario.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

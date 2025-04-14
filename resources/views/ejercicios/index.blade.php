@@ -65,7 +65,7 @@
     position: relative;
     z-index: 2;
   }
-  /* Un overlay animado sutil en las tarjetas */
+  /* Overlay animado sutil en las tarjetas */
   .card-exercise::before {
     content: '';
     position: absolute;
@@ -93,14 +93,16 @@
   }
 </style>
 
-<!-- Fondo animado en el contenedor principal -->
+<!-- Encabezado con fondo animado -->
 <div class="container-fluid animated-bg">
-  <!-- Encabezado -->
   <div class="container header-index">
-    <h1>Mis Ejercicios</h1>
-    <a href="{{ route('ejercicios.create') }}" class="btn btn-primary mt-3">
-      <i class="fa-solid fa-plus"></i> Registrar Nuevo Ejercicio
-    </a>
+    <h1>Ejercicios</h1>
+    <!-- Solo los entrenadores y superadmin tienen acceso a crear ejercicio -->
+    @if(Auth::user()->role === 'entrenador' || Auth::user()->role === 'superadmin')
+      <a href="{{ route('ejercicios.create') }}" class="btn btn-primary mt-3">
+        <i class="fa-solid fa-plus"></i> Registrar Nuevo Ejercicio
+      </a>
+    @endif
   </div>
 </div>
 
@@ -130,16 +132,19 @@
               <a href="{{ route('ejercicios.show', $ejercicio) }}" class="btn btn-info btn-sm action-btn" title="Ver">
                 <i class="fa-solid fa-eye"></i>
               </a>
-              <a href="{{ route('ejercicios.edit', $ejercicio) }}" class="btn btn-warning btn-sm action-btn" title="Editar">
-                <i class="fa-solid fa-pen-to-square"></i>
-              </a>
-              <form action="{{ route('ejercicios.destroy', $ejercicio) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este ejercicio?');" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-danger btn-sm action-btn" title="Eliminar">
-                  <i class="fa-solid fa-trash"></i>
-                </button>
-              </form>
+              <!-- Los botones de editar y eliminar solo se muestran para entrenadores y superadmin -->
+              @if(Auth::user()->role === 'entrenador' || Auth::user()->role === 'superadmin')
+                <a href="{{ route('ejercicios.edit', $ejercicio) }}" class="btn btn-warning btn-sm action-btn" title="Editar">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </a>
+                <form action="{{ route('ejercicios.destroy', $ejercicio) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este ejercicio?');" style="display:inline;">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger btn-sm action-btn" title="Eliminar">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </form>
+              @endif
             </div>
           </div>
         </div>
