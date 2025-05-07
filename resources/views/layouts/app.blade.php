@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/bootstrap-icons.css" rel="stylesheet">
+
 
   <!-- Estilos en línea: Mobile-first, variables y transiciones -->
   <style>
@@ -295,60 +298,75 @@ li:hover > .submenu {
         <span>Menú</span>
       </div>
       <ul class="components">
-        <li>
-          <a href="{{ route('fichas.index') }}">
-            <i class="fas fa-file-medical" aria-hidden="true"></i>
-            <span class="menu-text">Ficha Médica</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('ejercicios.index') }}">
-            <i class="fas fa-dumbbell" aria-hidden="true"></i>
-            <span class="menu-text">Ejercicios</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('recomendaciones.index') }}">
-            <i class="fas fa-notes-medical" aria-hidden="true"></i>
-            <span class="menu-text">Recomendaciones</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('rutinas.index') }}">
-            <i class="fas fa-running" aria-hidden="true"></i>
-            <span class="menu-text">Rutinas</span>
-          </a>
-        </li>
-        <li>
-          <a href="{{ route('planes.index') }}">
-            <i class="fas fa-apple-alt" aria-hidden="true"></i>
-            <span class="menu-text">Plan Nutricional</span>
-          </a>
-        </li>
+          <li>
+            <a href="{{ route('fichas.index') }}">
+              <i class="fas fa-file-medical" aria-hidden="true"></i>
+              <span class="menu-text">Ficha Médica</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('ejercicios.index') }}">
+              <i class="fas fa-dumbbell" aria-hidden="true"></i>
+              <span class="menu-text">Ejercicios</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('recomendaciones.index') }}">
+              <i class="fas fa-notes-medical" aria-hidden="true"></i>
+              <span class="menu-text">Recomendaciones</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('rutinas.index') }}">
+              <i class="fas fa-running" aria-hidden="true"></i>
+              <span class="menu-text">Rutinas</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('planes.index') }}">
+              <i class="fas fa-apple-alt" aria-hidden="true"></i>
+              <span class="menu-text">Plan Nutricional</span>
+            </a>
+          </li>
 
-        <li>
-          <a href="{{ route('clases.index') }}">
-            <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
-            <span class="menu-text">Clases</span>
-          </a>
-          <ul class="submenu">
-            <li>
-              <a href="{{ route('clases.index') }}">Lista de Clases</a>
-            </li>
-            <li>
-              <a href="{{ route('clases.historial') }}">Historial de Clases</a>
-            </li>
-          </ul>
-        </li>
+          <li>
+            <a href="{{ route('clases.index') }}">
+              <i class="fas fa-chalkboard-teacher" aria-hidden="true"></i>
+              <span class="menu-text">Clases</span>
+            </a>
+            <ul class="submenu">
+              <li><a href="{{ route('clases.index') }}">Lista de Clases</a></li>
+              <li><a href="{{ route('clases.historial') }}">Historial de Clases</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="{{ route('asistencias.calendario') }}">
+              <i class="fas fa-calendar-check" aria-hidden="true"></i>
+              <span class="menu-text">Calendario Gym</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{{ route('qr-sessions.index') }}">
+              <i class="fas fa-qrcode" aria-hidden="true"></i>
+              <span class="menu-text">Sesiones QR</span>
+            </a>
+            <ul class="submenu">
+              <li><a href="{{ route('qr-sessions.index') }}">Ver Sesiones</a></li>
+              <li><a href="{{ route('qr-sessions.create') }}">Crear Sesión QR</a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="{{ route('qr-sessions.enter-code') }}">
+              <i class="fas fa-camera" aria-hidden="true"></i>
+              <span class="menu-text">Escanear QR</span>
+            </a>
+          </li>
+        </ul>
 
 
-        <li>
-          <a href="{{ route('asistencias.calendario') }}">
-            <i class="fas fa-calendar-check" aria-hidden="true"></i>
-            <span class="menu-text">Calendario Gym</span>
-          </a>
-        </li>
-      </ul>
     </nav>
 
     <!-- Contenido Principal -->
@@ -387,7 +405,8 @@ li:hover > .submenu {
     <div class="mobile-tabs d-md-none">
       <a href="{{ route('fichas.index') }}"><i class="fas fa-user"></i></a>
       <a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i></a>
-      <a href="{{ route('rutinas.index') }}"><i class="fas fa-running"></i></a>
+      <a href="{{ route('qr-sessions.index') }}"><i class="fas fa-tachometer-alt"></i></a>
+      <a href="{{ route('qr-sessions.enter-code') }}"><i class="fas fa-qrcode"></i></a>
       <a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-alt"></i></a>
     </div>
   @else

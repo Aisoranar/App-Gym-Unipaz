@@ -11,6 +11,7 @@ use App\Http\Controllers\PlanNutricionalController;
 use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\QrCodeSessionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,4 +76,38 @@ Route::middleware('auth')->group(function () {
     Route::get('calendario', [AsistenciaController::class, 'index'])->name('asistencias.calendario');
     Route::get('asistencias/eventos', [AsistenciaController::class, 'eventos'])->name('asistencias.eventos');
     Route::post('asistencias', [AsistenciaController::class, 'store'])->name('asistencias.store');
+
+    // Administración de sesiones (solo entrenadores)
+    Route::middleware('role:entrenador')->group(function () {
+        Route::get('/qr-sessions', [QrCodeSessionController::class, 'index'])
+             ->name('qr-sessions.index');
+        Route::get('/qr-sessions/create', [QrCodeSessionController::class, 'create'])
+             ->name('qr-sessions.create');
+        Route::post('/qr-sessions', [QrCodeSessionController::class, 'store'])
+             ->name('qr-sessions.store');
+        Route::get('/qr-sessions/{id}/edit', [QrCodeSessionController::class, 'edit'])
+             ->name('qr-sessions.edit');
+        Route::put('/qr-sessions/{id}', [QrCodeSessionController::class, 'update'])
+             ->name('qr-sessions.update');
+        Route::delete('/qr-sessions/{id}', [QrCodeSessionController::class, 'destroy'])
+             ->name('qr-sessions.destroy');
+        Route::patch('/qr-sessions/{id}/toggle', [QrCodeSessionController::class, 'toggle'])
+             ->name('qr-sessions.toggle');
+        Route::get('/qr-sessions/{id}', [QrCodeSessionController::class, 'show'])
+             ->name('qr-sessions.show');
+    });
+
+    // Escaneo de sesiones (todos los usuarios autenticados)
+    // 1) Formulario donde el usuario ingresa el código QR manualmente
+    Route::get('/qr/enter-code', [QrCodeSessionController::class, 'enterCode'])
+         ->name('qr-sessions.enter-code');
+
+    // 2) Una vez con el código, muestra el form de registro de asistencia
+    Route::get('/qr/scan/{codigo}', [QrCodeSessionController::class, 'scanForm'])
+         ->name('qr-sessions.scan-form');
+
+    // 3) Procesa el registro de asistencia
+    Route::match(['get', 'post'], '/qr/scan', [QrCodeSessionController::class, 'scanSubmit'])
+    ->name('qr-sessions.scan-submit');
+
 });
