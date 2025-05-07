@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode; // simplesoftwareio/simple-qrcode
 use Illuminate\Support\Facades\Storage;
 
+
 class QrCodeSessionController extends Controller
 {
     /**
@@ -20,7 +21,7 @@ class QrCodeSessionController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:entrenador')
-             ->except(['enterCode', 'scanForm', 'scanSubmit']);
+             ->except(['enterCode', 'scanForm', 'scanSubmit', 'myAttendances']);
     }
 
     /**
@@ -186,18 +187,20 @@ class QrCodeSessionController extends Controller
     /**
      * Validar el código QR y mostrar formulario de escaneo.
      */
-    public function scanForm(Request $request)
+    public function scanForm($codigo)
     {
-        $codigo  = $request->query('codigo');
+        // Ahora $codigo viene directamente de la URL: /qr/scan/{codigo}
         $session = QrCodeSession::where('codigo', $codigo)->first();
-
+    
         if (!$session) {
-            return redirect()->back()->with('error', 'El código no existe.');
+            return redirect()->route('qr-sessions.enter-code')
+                             ->with('error', 'El código no existe.');
         }
         if (!$session->activo) {
-            return redirect()->back()->with('error', 'Este código está deshabilitado.');
+            return redirect()->route('qr-sessions.enter-code')
+                             ->with('error', 'Este código está deshabilitado.');
         }
-
+    
         return view('qr_sessions.scan', compact('session'));
     }
 
@@ -212,13 +215,25 @@ class QrCodeSessionController extends Controller
             'actividad'          => 'required|string|max:255',
             'fecha'              => 'required|date',
         ]);
-
+    
         $session = QrCodeSession::findOrFail($request->qr_code_session_id);
         if (!$session->activo) {
             return redirect()->back()->with('error', 'No puedes registrar: sesión deshabilitada.');
         }
-
+    
+        // 1) Verificar duplicado:
+        $yaRegistrado = QrScan::where('usuario_id', auth()->id())
+            ->where('qr_code_session_id', $session->id)
+            ->where('fecha', $request->fecha)
+            ->exists();
+    
+        if ($yaRegistrado) {
+            return redirect()->route('qr-sessions.scan-form', $session->codigo)
+                             ->with('error', 'Ya has registrado tu asistencia para este día.');
+        }
+    
         try {
+            // 2) Crear asistencia si no existe
             QrScan::create([
                 'usuario_id'         => auth()->id(),
                 'qr_code_session_id' => $session->id,
@@ -226,7 +241,7 @@ class QrCodeSessionController extends Controller
                 'actividad'          => $request->actividad,
                 'fecha'              => $request->fecha,
             ]);
-
+    
             return redirect()->route('qr-sessions.scan-form', $session->codigo)
                              ->with('success', 'Asistencia registrada correctamente.');
         } catch (\Exception $e) {
@@ -234,4 +249,16 @@ class QrCodeSessionController extends Controller
                              ->with('error', 'Ocurrió un problema: ' . $e->getMessage());
         }
     }
+
+    public function myAttendances()
+{
+    $scans = QrScan::with('session')
+        ->where('usuario_id', auth()->id())
+        ->orderBy('fecha', 'desc')
+        ->get();
+    
+    return view('qr_sessions.my_attendances', compact('scans'));
+}
+
+    
 }

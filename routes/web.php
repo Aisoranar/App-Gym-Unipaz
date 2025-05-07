@@ -13,6 +13,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QrCodeSessionController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -96,6 +97,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/qr-sessions/{id}', [QrCodeSessionController::class, 'show'])
              ->name('qr-sessions.show');
     });
+
+    Route::get('/mis-asistencias', [QrCodeSessionController::class, 'myAttendances'])
+     ->middleware('auth')
+     ->name('qr-sessions.my-attendances');
+
 
         // Escaneo de sesiones (todos los usuarios autenticados)
     // 1) Formulario donde el usuario ingresa el codigo QR manualmente

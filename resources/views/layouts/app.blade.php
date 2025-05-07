@@ -365,6 +365,16 @@ li:hover > .submenu {
               <span class="menu-text">Escanear QR</span>
             </a>
           </li>
+          <li>
+            <a href="{{ route('qr-sessions.my-attendances') }}">
+              <i class="fas fa-list-check" aria-hidden="true"></i>
+              <span class="menu-text">Mis Asistencias</span>
+            </a>
+          </li>
+
+          
+
+          
         </ul>
 
 
