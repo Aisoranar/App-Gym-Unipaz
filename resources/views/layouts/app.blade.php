@@ -346,7 +346,7 @@ li:hover > .submenu {
               <span class="menu-text">Calendario Gym</span>
             </a>
           </li>
-
+          @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']))
           <li>
             <a href="{{ route('qr-sessions.index') }}">
               <i class="fas fa-qrcode" aria-hidden="true"></i>
@@ -357,6 +357,7 @@ li:hover > .submenu {
               <li><a href="{{ route('qr-sessions.create') }}">Crear Sesión QR</a></li>
             </ul>
           </li>
+          @endif
 
           <li>
             <a href="{{ route('qr-sessions.enter-code') }}">
