@@ -10,10 +10,14 @@ class CreateQrCodeSessionsTable extends Migration
     {
         Schema::create('qr_code_sessions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Entrenador que creó la sesión
+            // Entrenador que creó la sesión
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('nombre');
             $table->boolean('activo')->default(true);
-            $table->string('codigo')->unique(); // Código QR único
+            // Código QR alfanumérico único
+            $table->string('codigo')->unique();
+            // Ruta de la imagen PNG generada para el QR
+            $table->string('qr_image')->nullable();
             $table->timestamps();
         });
     }

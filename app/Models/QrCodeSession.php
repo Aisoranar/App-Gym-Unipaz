@@ -14,6 +14,7 @@ class QrCodeSession extends Model
         'nombre',
         'activo',
         'codigo',
+        'qr_image',
     ];
 
     // Relación: una sesión QR pertenece a un entrenador (usuario)
