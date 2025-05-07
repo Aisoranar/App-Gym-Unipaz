@@ -405,7 +405,11 @@ li:hover > .submenu {
     <div class="mobile-tabs d-md-none">
       <a href="{{ route('fichas.index') }}"><i class="fas fa-user"></i></a>
       <a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i></a>
-      <a href="{{ route('qr-sessions.index') }}"><i class="fas fa-tachometer-alt"></i></a>
+      @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']))
+    <a href="{{ route('qr-sessions.index') }}">
+        <i class="fas fa-tachometer-alt"></i>
+    </a>
+@endif
       <a href="{{ route('qr-sessions.enter-code') }}"><i class="fas fa-qrcode"></i></a>
       <a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-alt"></i></a>
     </div>
