@@ -7,27 +7,54 @@ use App\Models\Ejercicio;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AsistenciaController extends Controller
 {
     /**
-     * Muestra la vista del calendario de asistencia.
+     * Muestra la vista del calendario de asistencia,
+     * junto con la racha de días consecutivos.
      */
     public function index()
     {
         $user = Auth::user();
 
-        // Si el usuario es normal, se muestran los ejercicios creados por entrenadores y superadmin,
-        // ya que ellos son los que pueden crear ejercicios para realizar.
+        // 1) Cargar ejercicios según rol
         if ($user->role === 'usuario') {
             $ids = User::whereIn('role', ['entrenador', 'superadmin'])->pluck('id');
             $ejercicios = Ejercicio::whereIn('user_id', $ids)->get();
         } else {
-            // Si el usuario es entrenador o superadmin, se muestran sus propios ejercicios.
             $ejercicios = Ejercicio::where('user_id', $user->id)->get();
         }
 
-        return view('asistencias.calendario', compact('ejercicios'));
+        // 2) Obtener todas las fechas de asistencia del usuario
+        $fechas = Asistencia::where('user_id', $user->id)
+            ->orderByDesc('fecha')
+            ->pluck('fecha')
+            ->map(fn($f) => Carbon::parse($f)->startOfDay());
+
+        $hoy    = Carbon::today();
+        $streak = 0;
+        $lost   = false;
+        $dia    = $hoy->copy();
+
+        // 3) Contar días consecutivos hacia atrás
+        while ($fechas->contains($dia)) {
+            $streak++;
+            $dia = $dia->subDay();
+        }
+
+        // 4) Si no asistió hoy, perdió la racha
+        if (! $fechas->contains($hoy)) {
+            $lost = true;
+        }
+
+        // 5) Devolver la vista con todas las variables
+        return view('asistencias.calendario', [
+            'ejercicios'    => $ejercicios,
+            'currentStreak' => $streak,
+            'streakLost'    => $lost,
+        ]);
     }
 
     /**
@@ -40,11 +67,13 @@ class AsistenciaController extends Controller
             ->get();
 
         $eventos = $asistencias->map(function ($asistencia) {
-            // Si el ejercicio está definido, usamos su nombre, de lo contrario se muestra "Gym"
-            $titulo = $asistencia->ejercicio ? $asistencia->ejercicio->nombre_ejercicio : 'Gym';
+            $titulo = $asistencia->ejercicio
+                ? $asistencia->ejercicio->nombre_ejercicio
+                : 'Gym';
             return [
                 'title'  => $titulo,
                 'start'  => $asistencia->fecha,
+                'end'    => $asistencia->fecha,
                 'allDay' => true,
             ];
         });
@@ -59,26 +88,24 @@ class AsistenciaController extends Controller
     {
         $request->validate([
             'fecha'        => 'required|date',
-            'ejercicio_id' => 'required|exists:ejercicios,id'
+            'ejercicio_id' => 'required|exists:ejercicios,id',
         ]);
 
-        // Verifica que el ejercicio corresponda al usuario actual o,
-        // en caso de usuario normal, que el ejercicio pertenezca a un entrenador o superadmin
-        $ejercicio = Ejercicio::where('id', $request->ejercicio_id)
-            ->first();
-
-        if (!$ejercicio) {
+        $ejercicio = Ejercicio::find($request->ejercicio_id);
+        if (! $ejercicio) {
             return response()->json(['message' => 'Ejercicio no encontrado.'], 404);
         }
 
-        // Si el usuario normal intenta registrar un ejercicio que NO fue creado por entrenador o superadmin, se rechaza.
-        if (Auth::user()->role === 'usuario' && !in_array($ejercicio->user->role, ['entrenador', 'superadmin'])) {
-            return response()->json(['message' => 'No tienes permiso para registrar asistencia con este ejercicio.'], 403);
+        if (
+            Auth::user()->role === 'usuario' &&
+            ! in_array($ejercicio->user->role, ['entrenador', 'superadmin'])
+        ) {
+            return response()->json(['message' => 'No tienes permiso para usar este ejercicio.'], 403);
         }
 
         $existe = Asistencia::where('user_id', Auth::id())
             ->where('fecha', $request->fecha)
-            ->first();
+            ->exists();
 
         if ($existe) {
             return response()->json(['message' => 'Ya registraste asistencia en esa fecha.'], 409);
@@ -90,6 +117,6 @@ class AsistenciaController extends Controller
             'ejercicio_id' => $request->ejercicio_id,
         ]);
 
-        return response()->json(['message' => 'Asistencia registrada correctamente.'], 201);
+        return response()->json(['message' => '¡Excelente! Has marcado tu asistencia.'], 201);
     }
 }
