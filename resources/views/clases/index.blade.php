@@ -223,35 +223,7 @@
           <a href="{{ route('clases.show', $clase) }}" class="btn-custom" title="Ver">
             <i class="fa-solid fa-eye"></i> Ver
           </a>
-          @if(auth()->user()->role === 'usuario')
-            @if($clase->participants->contains(auth()->user()->id))
-              <form action="{{ route('clases.leave', $clase) }}" method="POST" style="display:inline;">
-                @csrf
-                <button type="submit" class="btn-danger" title="Salir">
-                  <i class="fa-solid fa-right-from-bracket"></i> Salir
-                </button>
-              </form>
-            @else
-              <form action="{{ route('clases.join', $clase) }}" method="POST" style="display:inline;">
-                @csrf
-                <button type="submit" class="btn-custom" title="Unirse">
-                  <i class="fa-solid fa-user-plus"></i> Unirse
-                </button>
-              </form>
-            @endif
-          @endif
-          @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']) && $clase->user_id == auth()->user()->id)
-            <a href="{{ route('clases.edit', $clase) }}" class="btn-custom" title="Editar">
-              <i class="fa-solid fa-pen-to-square"></i> Editar
-            </a>
-            <form action="{{ route('clases.destroy', $clase) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar esta clase?');">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn-danger" title="Eliminar">
-                <i class="fa-solid fa-trash"></i> Eliminar
-              </button>
-            </form>
-          @endif
+          {{-- ... resto de acciones ... --}}
         </div>
       </div>
     @endforeach

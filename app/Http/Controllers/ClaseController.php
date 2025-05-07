@@ -22,10 +22,6 @@ class ClaseController extends Controller
                 ->get();
         }
 
-        foreach ($clases as $clase) {
-            $clase->updateStatusIfExpired();
-        }
-
         return view('clases.index', compact('clases'));
     }
 
@@ -53,7 +49,7 @@ class ClaseController extends Controller
             'nivel'             => 'nullable|string|max:100',
             'max_participantes' => 'nullable|integer|min:1',
             'imagen'            => 'nullable|image|max:2048',
-            'is_active'         => 'required|boolean',
+            'is_active'         => 'required|in:0,1',
         ]);
 
         if ($request->hasFile('imagen')) {
@@ -62,7 +58,7 @@ class ClaseController extends Controller
         }
 
         $validated['user_id']   = Auth::id();
-        $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_active'] = $request->input('is_active');
 
         Clase::create($validated);
 
@@ -72,7 +68,6 @@ class ClaseController extends Controller
 
     public function show(Clase $clase)
     {
-        $clase->updateStatusIfExpired();
         return view('clases.show', compact('clase'));
     }
 
@@ -102,7 +97,7 @@ class ClaseController extends Controller
             'nivel'             => 'nullable|string|max:100',
             'max_participantes' => 'nullable|integer|min:1',
             'imagen'            => 'nullable|image|max:2048',
-            'is_active'         => 'required|boolean',
+            'is_active'         => 'required|in:0,1',
         ]);
 
         if ($request->hasFile('imagen')) {
@@ -110,7 +105,7 @@ class ClaseController extends Controller
                                      ->store('images', 'public');
         }
 
-        $validated['is_active'] = $request->boolean('is_active');
+        $validated['is_active'] = $request->input('is_active');
 
         $clase->update($validated);
 
@@ -124,7 +119,9 @@ class ClaseController extends Controller
             || $clase->user_id !== Auth::id()) {
             abort(403);
         }
+
         $clase->delete();
+
         return redirect()->route('clases.index')
                          ->with('success', 'Clase eliminada correctamente.');
     }

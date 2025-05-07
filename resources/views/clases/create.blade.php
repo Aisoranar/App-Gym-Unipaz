@@ -28,94 +28,163 @@
     <h1 class="mb-4 text-primary fw-bold">
         <i class="fa-solid fa-calendar-plus"></i> Crear Nueva Clase
     </h1>
-    <!-- Se añade enctype para subir archivos -->
+
     <form method="POST" action="{{ route('clases.store') }}" enctype="multipart/form-data">
-      @csrf
-      
-      <div class="form-section">
-          <h5><i class="fa-solid fa-book-open"></i> Información de la Clase</h5>
-          <div class="row g-3">
-              <div class="col-md-6">
-                  <label for="titulo">Título</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-heading"></i></span>
-                      <input type="text" name="titulo" id="titulo" class="form-control" required>
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <label for="fecha">Fecha</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
-                      <input type="date" name="fecha" id="fecha" class="form-control" required>
-                  </div>
-              </div>
-              <div class="col-12">
-                  <label for="descripcion">Descripción</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-align-left"></i></span>
-                      <textarea name="descripcion" id="descripcion" class="form-control"></textarea>
-                  </div>
-              </div>
-              <div class="col-12">
-                  <label for="objetivos">Objetivos de la Clase</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-bullseye"></i></span>
-                      <textarea name="objetivos" id="objetivos" class="form-control" placeholder="Ej: Mejorar flexibilidad y técnica de respiración"></textarea>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <label for="hora_inicio">Hora de Inicio</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
-                      <input type="time" name="hora_inicio" id="hora_inicio" class="form-control" required>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <label for="hora_fin">Hora de Fin (opcional)</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-clock-rotate-left"></i></span>
-                      <input type="time" name="hora_fin" id="hora_fin" class="form-control">
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <label for="nivel">Nivel de la Clase</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-signal"></i></span>
-                      <input type="text" name="nivel" id="nivel" class="form-control" placeholder="Ej: Principiante">
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <label for="max_participantes">Máximo de Participantes</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-users"></i></span>
-                      <input type="number" name="max_participantes" id="max_participantes" class="form-control" min="1">
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <label for="imagen">Imagen</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
-                      <input type="file" name="imagen" id="imagen" class="form-control">
-                  </div>
-              </div>
-              <div class="col-md-6">
-                  <label for="is_active">Estado de la Clase</label>
-                  <div class="input-group">
-                      <span class="input-group-text"><i class="fa-solid fa-toggle-on"></i></span>
-                      <select name="is_active" id="is_active" class="form-select" required>
-                          <option value="1" selected>Activa</option>
-                          <option value="0">Inactiva</option>
-                      </select>
-                  </div>
-              </div>
-          </div>
-      </div>
-      
-      <div class="text-end">
-          <button type="submit" class="btn btn-primary btn-lg">
-              <i class="fa-solid fa-check"></i> Crear Clase
-          </button>
-      </div>
+        @csrf
+
+        <div class="form-section">
+            <h5><i class="fa-solid fa-book-open"></i> Información de la Clase</h5>
+            <div class="row g-3">
+                {{-- Título --}}
+                <div class="col-md-6">
+                    <label for="titulo">Título</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-heading"></i></span>
+                        <input type="text"
+                               name="titulo"
+                               id="titulo"
+                               class="form-control @error('titulo') is-invalid @enderror"
+                               value="{{ old('titulo') }}"
+                               required>
+                    </div>
+                    @error('titulo')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Fecha --}}
+                <div class="col-md-6">
+                    <label for="fecha">Fecha</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-calendar-check"></i></span>
+                        <input type="date"
+                               name="fecha"
+                               id="fecha"
+                               class="form-control @error('fecha') is-invalid @enderror"
+                               value="{{ old('fecha') }}"
+                               required>
+                    </div>
+                    @error('fecha')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Descripción --}}
+                <div class="col-12">
+                    <label for="descripcion">Descripción</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-align-left"></i></span>
+                        <textarea name="descripcion"
+                                  id="descripcion"
+                                  class="form-control @error('descripcion') is-invalid @enderror">{{ old('descripcion') }}</textarea>
+                    </div>
+                    @error('descripcion')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Objetivos --}}
+                <div class="col-12">
+                    <label for="objetivos">Objetivos de la Clase</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-bullseye"></i></span>
+                        <textarea name="objetivos"
+                                  id="objetivos"
+                                  class="form-control @error('objetivos') is-invalid @enderror"
+                                  placeholder="Ej: Mejorar flexibilidad y técnica de respiración">{{ old('objetivos') }}</textarea>
+                    </div>
+                    @error('objetivos')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Hora de inicio --}}
+                <div class="col-md-4">
+                    <label for="hora_inicio">Hora de Inicio</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-clock"></i></span>
+                        <input type="time"
+                               name="hora_inicio"
+                               id="hora_inicio"
+                               class="form-control @error('hora_inicio') is-invalid @enderror"
+                               value="{{ old('hora_inicio') }}"
+                               required>
+                    </div>
+                    @error('hora_inicio')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Hora de fin --}}
+                <div class="col-md-4">
+                    <label for="hora_fin">Hora de Fin (opcional)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        <input type="time"
+                               name="hora_fin"
+                               id="hora_fin"
+                               class="form-control @error('hora_fin') is-invalid @enderror"
+                               value="{{ old('hora_fin') }}">
+                    </div>
+                    @error('hora_fin')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Nivel --}}
+                <div class="col-md-4">
+                    <label for="nivel">Nivel de la Clase</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-signal"></i></span>
+                        <input type="text"
+                               name="nivel"
+                               id="nivel"
+                               class="form-control @error('nivel') is-invalid @enderror"
+                               placeholder="Ej: Principiante"
+                               value="{{ old('nivel') }}">
+                    </div>
+                    @error('nivel')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Máximo de participantes --}}
+                <div class="col-md-6">
+                    <label for="max_participantes">Máximo de Participantes</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-users"></i></span>
+                        <input type="number"
+                               name="max_participantes"
+                               id="max_participantes"
+                               class="form-control @error('max_participantes') is-invalid @enderror"
+                               min="1"
+                               value="{{ old('max_participantes') }}">
+                    </div>
+                    @error('max_participantes')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Imagen --}}
+                <div class="col-md-6">
+                    <label for="imagen">Imagen</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-image"></i></span>
+                        <input type="file"
+                               name="imagen"
+                               id="imagen"
+                               class="form-control @error('imagen') is-invalid @enderror">
+                    </div>
+                    @error('imagen')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+
+                {{-- Estado --}}
+                <div class="col-md-6">
+                    <label for="is_active">Estado de la Clase</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fa-solid fa-toggle-on"></i></span>
+                        <select name="is_active"
+                                id="is_active"
+                                class="form-select @error('is_active') is-invalid @enderror"
+                                required>
+                            <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Activa</option>
+                            <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactiva</option>
+                        </select>
+                    </div>
+                    @error('is_active')<small class="text-danger">{{ $message }}</small>@enderror
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-check"></i> Crear Clase
+            </button>
+        </div>
     </form>
 </div>
 

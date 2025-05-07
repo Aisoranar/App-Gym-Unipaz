@@ -10,71 +10,82 @@
     --bg-dark: #020c1b;
     --white: #ccd6f6;
   }
-  
+
   body {
-    background: var(--bg-dark);
+    background-color: var(--bg-dark);
     color: var(--white);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
   }
-  
+
   .historial-container {
     padding: 2rem;
-    background: #112240;
-    border-radius: 0.5rem;
+    background-color: var(--secondary);
+    border-radius: 0.75rem;
     margin: 2rem auto;
-    max-width: 800px;
+    max-width: 900px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
-  
+
   .historial-container h1 {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     color: var(--accent);
+    font-weight: 700;
   }
-  
+
   .historial-table {
     width: 100%;
     border-collapse: collapse;
+    background-color: var(--primary);
+    border-radius: 0.5rem;
+    overflow: hidden;
   }
-  
-  .historial-table thead tr {
-    background: var(--accent);
-    color: var(--bg-dark);
+
+  .historial-table thead {
+    background-color: var(--accent);
+    color: var(--primary);
   }
-  
+
   .historial-table th, .historial-table td {
-    padding: 0.75rem;
+    padding: 1rem;
     border: 1px solid var(--white);
     text-align: center;
+    font-size: 1rem;
   }
-  
+
   .estado-activa {
-    color: green;
-    font-weight: bold;
-  }
-  
-  .estado-inactiva {
-    color: red;
+    color: #28a745;
     font-weight: bold;
   }
 
-  /* Estilo para el enlace del título de clase */
+  .estado-inactiva {
+    color: #dc3545;
+    font-weight: bold;
+  }
+
   .clase-link {
     color: var(--white);
     text-decoration: none;
     font-weight: bold;
+    transition: color 0.3s;
   }
-  
+
   .clase-link:hover {
-    text-decoration: underline;
     color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .no-data {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    color: #bbb;
   }
 </style>
 
 <div class="historial-container">
-  <h1>Historial de Clases</h1>
-  
+  <h1><i class="fa-solid fa-clock-rotate-left"></i> Historial de Clases</h1>
+
   @if($historial->isNotEmpty())
     <table class="historial-table">
       <thead>
@@ -105,7 +116,7 @@
       </tbody>
     </table>
   @else
-    <p style="text-align: center;">No has participado en ninguna clase aún.</p>
+    <p class="no-data">No has participado en ninguna clase aún.</p>
   @endif
 </div>
 
