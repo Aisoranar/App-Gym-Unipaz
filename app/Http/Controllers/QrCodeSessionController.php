@@ -208,47 +208,52 @@ class QrCodeSessionController extends Controller
      * Procesar el escaneo y guardar la asistencia.
      */
     public function scanSubmit(Request $request)
-    {
-        $request->validate([
-            'qr_code_session_id' => 'required|exists:qr_code_sessions,id',
-            'carrera'            => 'required|string|max:255',
-            'actividad'          => 'required|string|max:255',
-            'fecha'              => 'required|date',
-        ]);
-    
-        $session = QrCodeSession::findOrFail($request->qr_code_session_id);
-        if (!$session->activo) {
-            return redirect()->back()->with('error', 'No puedes registrar: sesión deshabilitada.');
-        }
-    
-        // 1) Verificar duplicado:
-        $yaRegistrado = QrScan::where('usuario_id', auth()->id())
-            ->where('qr_code_session_id', $session->id)
-            ->where('fecha', $request->fecha)
-            ->exists();
-    
-        if ($yaRegistrado) {
+{
+    $request->validate([
+        'qr_code_session_id' => 'required|exists:qr_code_sessions,id',
+        'carrera'            => 'required|string|max:255',
+        'actividad'          => 'required|string|max:255',
+        'fecha'              => 'required|date',
+    ]);
+
+    $session = QrCodeSession::findOrFail($request->qr_code_session_id);
+    if (!$session->activo) {
+        return redirect()->back()->with('error', 'No puedes registrar: sesión deshabilitada.');
+    }
+
+    // Solo cooldown de 1 minuto entre escaneos
+    $ultimoScan = QrScan::where('usuario_id', auth()->id())
+        ->where('qr_code_session_id', $session->id)
+        ->latest('created_at')
+        ->first();
+
+    if ($ultimoScan) {
+        $segundosPasados = now()->diffInSeconds($ultimoScan->created_at);
+        if ($segundosPasados < 60) {
+            // Calculamos minutos (redondeando hacia arriba)
+            $minutosRestantes = 1; // Siempre será 1 si estamos dentro de 60s
             return redirect()->route('qr-sessions.scan-form', $session->codigo)
-                             ->with('error', 'Ya has registrado tu asistencia para este día.');
-        }
-    
-        try {
-            // 2) Crear asistencia si no existe
-            QrScan::create([
-                'usuario_id'         => auth()->id(),
-                'qr_code_session_id' => $session->id,
-                'carrera'            => $request->carrera,
-                'actividad'          => $request->actividad,
-                'fecha'              => $request->fecha,
-            ]);
-    
-            return redirect()->route('qr-sessions.scan-form', $session->codigo)
-                             ->with('success', 'Asistencia registrada correctamente.');
-        } catch (\Exception $e) {
-            return redirect()->back()
-                             ->with('error', 'Ocurrió un problema: ' . $e->getMessage());
+                             ->with('error', "Debes esperar {$minutosRestantes} minuto(s) antes de volver a escanear.");
         }
     }
+
+    try {
+        QrScan::create([
+            'usuario_id'         => auth()->id(),
+            'qr_code_session_id' => $session->id,
+            'carrera'            => $request->carrera,
+            'actividad'          => $request->actividad,
+            'fecha'              => $request->fecha,
+        ]);
+
+        return redirect()->route('qr-sessions.scan-form', $session->codigo)
+                         ->with('success', 'Asistencia registrada correctamente.');
+    } catch (\Exception $e) {
+        return redirect()->back()
+                         ->with('error', 'Ocurrió un problema: ' . $e->getMessage());
+    }
+}
+
 
     public function myAttendances()
 {
