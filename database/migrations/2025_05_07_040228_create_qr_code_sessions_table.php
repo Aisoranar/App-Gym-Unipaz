@@ -13,6 +13,7 @@ class CreateQrCodeSessionsTable extends Migration
             // Entrenador que creó la sesión
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('nombre');
+            $table->string('actividad');            
             $table->boolean('activo')->default(true);
             // Código QR alfanumérico único
             $table->string('codigo')->unique();

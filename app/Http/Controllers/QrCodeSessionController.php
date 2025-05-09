@@ -21,7 +21,7 @@ class QrCodeSessionController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:entrenador')
-             ->except(['enterCode', 'scanForm', 'scanSubmit', 'myAttendances']);
+             ->except(['enterCode', 'scanForm', 'scanSubmit','redirectCode', 'myAttendances']);
     }
 
     /**
@@ -49,6 +49,7 @@ class QrCodeSessionController extends Controller
     {
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'actividad' => 'required|string|max:255',          
             'activo' => 'nullable|boolean',
         ]);
 
@@ -61,6 +62,7 @@ class QrCodeSessionController extends Controller
         $session = QrCodeSession::create([
             'user_id'  => auth()->id(),
             'nombre'   => $request->nombre,
+            'actividad'=> $request->actividad,
             'activo'   => $request->activo ? true : false,
             'codigo'   => $codigo,
         ]);
@@ -108,11 +110,13 @@ class QrCodeSessionController extends Controller
 
         $request->validate([
             'nombre' => 'required|string|max:255',
+            'actividad' => 'required|string|max:255',            
             'activo' => 'nullable|boolean',
         ]);
 
         $session->update([
             'nombre' => $request->nombre,
+            'actividad' => $request->actividad,
             'activo' => $request->activo ? true : false,
         ]);
 
@@ -185,6 +189,22 @@ class QrCodeSessionController extends Controller
     }
 
     /**
+ * Procesa el formulario manual de ingreso de código
+ * y redirige a la ruta scan-form.
+ */
+public function redirectCode(Request $request)
+{
+    $request->validate([
+        'codigo' => 'required|string',
+    ]);
+
+    return redirect()
+        ->route('qr-sessions.scan-form', ['codigo' => $request->codigo]);
+}
+
+
+
+    /**
      * Validar el código QR y mostrar formulario de escaneo.
      */
     public function scanForm($codigo)
@@ -212,7 +232,6 @@ class QrCodeSessionController extends Controller
     $request->validate([
         'qr_code_session_id' => 'required|exists:qr_code_sessions,id',
         'carrera'            => 'required|string|max:255',
-        'actividad'          => 'required|string|max:255',
         'fecha'              => 'required|date',
     ]);
 
@@ -242,7 +261,6 @@ class QrCodeSessionController extends Controller
             'usuario_id'         => auth()->id(),
             'qr_code_session_id' => $session->id,
             'carrera'            => $request->carrera,
-            'actividad'          => $request->actividad,
             'fecha'              => $request->fecha,
         ]);
 

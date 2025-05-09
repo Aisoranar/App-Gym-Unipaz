@@ -48,13 +48,24 @@
                                 {{ $session->activo ? 'Activo' : 'Inactivo' }}
                             </span>
                         </div>
+
+                        <!-- Actividad -->
+                        <p class="card-text mb-1">
+                            <strong>Actividad:</strong> {{ $session->actividad }}
+                        </p>
+
+                        <!-- Código -->
                         <p class="card-text mb-2 text-truncate">
                             <strong>Código:</strong> {{ $session->codigo }}
                         </p>
+
+                        <!-- Botón de escanear -->
                         <a href="{{ route('qr-sessions.scan-form', ['codigo' => $session->codigo]) }}"
                            class="btn btn-outline-primary btn-sm mb-2">
                             <i class="fas fa-qrcode me-1"></i> Escanear Código
                         </a>
+
+                        <!-- Acciones -->
                         <div class="mt-auto d-flex gap-1">
                             <a href="{{ route('qr-sessions.show', $session->id) }}"
                                class="btn btn-info btn-sm flex-grow-1"

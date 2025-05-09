@@ -14,8 +14,9 @@
   @endif
 
   <!-- Formulario manual -->
-  <form id="manual-form" class="mb-4 d-flex justify-content-center animate__animated animate__fadeIn">
+  <form action="{{ route('qr-sessions.redirect-code') }}" method="GET" id="manual-form" class="mb-4 d-flex justify-content-center animate__animated animate__fadeIn">
     <input type="text" name="codigo" id="codigo" class="form-control w-50 me-2" placeholder="Ingresa código QR" required>
+
     <button type="submit" class="btn btn-primary animate__animated animate__pulse animate__infinite">
       Ir a Escaneo
     </button>

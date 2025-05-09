@@ -32,6 +32,22 @@
                     @enderror
                 </div>
 
+                <div class="mb-3">
+                    <label for="actividad" class="form-label">Actividad</label>
+                    <input type="text" name="actividad" id="actividad"
+                           class="form-control @error('actividad') is-invalid @enderror"
+                           value="{{ old('actividad') }}" required>
+                    @error('actividad')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" name="activo" id="activo" checked>
+                    <label class="form-check-label" for="activo">
+                        Activar esta sesión
+                    </label>
+                </div>
 
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary">

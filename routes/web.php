@@ -103,18 +103,23 @@ Route::middleware('auth')->group(function () {
      ->name('qr-sessions.my-attendances');
 
 
-        // Escaneo de sesiones (todos los usuarios autenticados)
-    // 1) Formulario donde el usuario ingresa el codigo QR manualmente
+    // Escaneo de sesiones (todos los usuarios autenticados)
+    // 1) Formulario donde el usuario ingresa el código QR manualmente
     Route::get('/qr/enter-code', [QrCodeSessionController::class, 'enterCode'])
          ->name('qr-sessions.enter-code');
 
-    // 2) Una vez con el codigo, muestra el form de registro de asistencia
+    // 1b) Procesar el formulario manual y redirigir a la ruta de escaneo
+    Route::get('/qr/redirect-code', [QrCodeSessionController::class, 'redirectCode'])
+         ->name('qr-sessions.redirect-code');
+
+    // 2) Una vez con el código, muestra el form de registro de asistencia
     Route::get('/qr/scan/{codigo}', [QrCodeSessionController::class, 'scanForm'])
          ->name('qr-sessions.scan-form');
 
-    // 3) Procesa el registro de asistencia
-    Route::match(['get', 'post'], '/qr/scan', [QrCodeSessionController::class, 'scanSubmit'])
+    // 3) Procesa el registro de asistencia (POST)
+    Route::post('/qr/scan', [QrCodeSessionController::class, 'scanSubmit'])
          ->name('qr-sessions.scan-submit');
+
 
 
 });

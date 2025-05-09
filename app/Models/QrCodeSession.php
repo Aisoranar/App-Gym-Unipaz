@@ -12,6 +12,7 @@ class QrCodeSession extends Model
     protected $fillable = [
         'user_id',
         'nombre',
+        'actividad',
         'activo',
         'codigo',
         'qr_image',

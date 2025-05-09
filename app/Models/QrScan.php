@@ -13,7 +13,6 @@ class QrScan extends Model
         'usuario_id',
         'qr_code_session_id',
         'carrera',
-        'actividad',
         'fecha',
     ];
 

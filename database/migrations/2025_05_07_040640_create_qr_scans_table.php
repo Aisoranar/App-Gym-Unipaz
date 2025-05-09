@@ -15,7 +15,6 @@ class CreateQrScansTable extends Migration
             // Sesión QR escaneada
             $table->foreignId('qr_code_session_id')->constrained('qr_code_sessions')->onDelete('cascade');
             $table->string('carrera');
-            $table->string('actividad');
             $table->date('fecha');
             $table->timestamps();
         });

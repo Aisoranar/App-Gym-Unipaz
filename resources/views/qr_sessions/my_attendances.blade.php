@@ -7,7 +7,9 @@
   <h1 class="mb-4 text-center animate__animated animate__fadeInDown">📅 Mis Asistencias</h1>
 
   @if($scans->isEmpty())
-    <div class="alert alert-info text-center animate__animated animate__fadeInUp">😅 Aún no tienes asistencias registradas. ¡Es hora de ponerte en movimiento!</div>
+    <div class="alert alert-info text-center animate__animated animate__fadeInUp">
+      😅 Aún no tienes asistencias registradas. ¡Es hora de ponerte en movimiento!
+    </div>
   @else
     {{-- Mobile: tarjetas --}}
     <div class="d-block d-md-none">
@@ -17,14 +19,14 @@
             <h5 class="card-title mb-2 fw-bold">🎯 {{ optional($scan->session)->nombre ?? 'Sin sesión' }}</h5>
             <p class="card-text mb-1">📆 <strong>Fecha:</strong> {{ \Carbon\Carbon::parse($scan->fecha)->format('d/m/Y') }}</p>
             <p class="card-text mb-1">🏃 <strong>Carrera:</strong> {{ $scan->carrera }}</p>
-            <p class="card-text mb-1">⚙️ <strong>Actividad:</strong> {{ $scan->actividad }}</p>
+            <p class="card-text mb-1">⚙️ <strong>Actividad:</strong> {{ optional($scan->session)->actividad ?? 'No definida' }}</p>
             <p class="card-text text-muted small">⏱ Registrado {{ \Carbon\Carbon::parse($scan->created_at)->diffForHumans() }}</p>
           </div>
         </div>
       @endforeach
     </div>
 
-    {{-- Desktop: tarjeta contenedor con tabla --}}
+    {{-- Desktop: tabla --}}
     <div class="d-none d-md-block animate__animated animate__fadeInUp">
       <div class="card shadow-sm rounded-4">
         <div class="card-body p-4">
@@ -45,7 +47,7 @@
                     <td class="fw-medium">{{ optional($scan->session)->nombre ?? 'N/A' }}</td>
                     <td>{{ \Carbon\Carbon::parse($scan->fecha)->format('d/m/Y') }}</td>
                     <td>{{ $scan->carrera }}</td>
-                    <td>{{ $scan->actividad }}</td>
+                    <td>{{ optional($scan->session)->actividad ?? 'No definida' }}</td>
                     <td>{{ \Carbon\Carbon::parse($scan->created_at)->format('d/m/Y H:i') }}</td>
                   </tr>
                 @endforeach
@@ -62,7 +64,6 @@
 @section('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 <style>
-  /* Mobile-first enhancements */
   .card {
     border: none;
     border-radius: 1rem;
@@ -73,7 +74,6 @@
   .alert {
     border-radius: .5rem;
   }
-  /* Desktop table styling */
   @media (min-width: 768px) {
     .table-primary th {
       background-color: var(--bs-primary);
@@ -100,6 +100,6 @@
 
 @section('scripts')
 <script>
-  // Placeholder for future interactivity
+  // Placeholder for future interactividad
 </script>
 @endsection
