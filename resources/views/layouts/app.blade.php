@@ -74,37 +74,39 @@
   @if(!in_array($currentRoute, ['login','register']))
     <!-- Sidebar -->
     <nav id="sidebar">
-      <div class="sidebar-header">
-        <i class="fas fa-dumbbell"></i>
-        <span>Menú</span>
-      </div>
-      <ul class="components">
-        <li><a href="{{ route('fichas.index') }}"><i class="fas fa-file-medical"></i><span class="menu-text">Ficha Médica</span></a></li>
-        <li><a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i><span class="menu-text">Ejercicios</span></a></li>
-        <li><a href="{{ route('recomendaciones.index') }}"><i class="fas fa-notes-medical"></i><span class="menu-text">Recomendaciones</span></a></li>
-        <li><a href="{{ route('rutinas.index') }}"><i class="fas fa-running"></i><span class="menu-text">Rutinas</span></a></li>
-        <li><a href="{{ route('planes.index') }}"><i class="fas fa-apple-alt"></i><span class="menu-text">Plan Nutricional</span></a></li>
-        <li>
-          <a href="{{ route('clases.index') }}"><i class="fas fa-chalkboard-teacher"></i><span class="menu-text">Clases</span></a>
-          <ul class="submenu">
-            <li><a href="{{ route('clases.index') }}">Lista de Clases</a></li>
-            <li><a href="{{ route('clases.historial') }}">Historial de Clases</a></li>
-          </ul>
-        </li>
-        <li><a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-check"></i><span class="menu-text">Calendario Gym</span></a></li>
-        @if(in_array(auth()->user()->role,['entrenador','superadmin']))
-        <li>
-          <a href="{{ route('qr-sessions.index') }}"><i class="fas fa-qrcode"></i><span class="menu-text">Sesiones QR</span></a>
-          <ul class="submenu">
-            <li><a href="{{ route('qr-sessions.index') }}">Ver Sesiones</a></li>
-            <li><a href="{{ route('qr-sessions.create') }}">Crear Sesión QR</a></li>
-          </ul>
-        </li>
-        @endif
-        <li><a href="{{ route('qr-sessions.enter-code') }}"><i class="fas fa-camera"></i><span class="menu-text">Escanear QR</span></a></li>
-        <li><a href="{{ route('qr-sessions.my-attendances') }}"><i class="fas fa-list-check"></i><span class="menu-text">Mis Asistencias</span></a></li>
+  <div class="sidebar-header">
+    <i class="fas fa-dumbbell"></i>
+    <span>Menú</span>
+  </div>
+  <ul class="components">
+    <li><a href="{{ route('fichas.index') }}"><i class="fas fa-file-medical"></i><span class="menu-text">Ficha Médica</span></a></li>
+    <li><a href="{{ route('ejercicios.index') }}"><i class="fas fa-dumbbell"></i><span class="menu-text">Ejercicios</span></a></li>
+    <li><a href="{{ route('recomendaciones.index') }}"><i class="fas fa-notes-medical"></i><span class="menu-text">Recomendaciones</span></a></li>
+    <li><a href="{{ route('rutinas.index') }}"><i class="fas fa-running"></i><span class="menu-text">Rutinas</span></a></li>
+    <li><a href="{{ route('planes.index') }}"><i class="fas fa-apple-alt"></i><span class="menu-text">Plan Nutricional</span></a></li>
+    <li>
+      <a href="{{ route('clases.index') }}"><i class="fas fa-chalkboard-teacher"></i><span class="menu-text">Clases</span></a>
+      <ul class="submenu">
+        <li><a href="{{ route('clases.index') }}">Lista de Clases</a></li>
+        <li><a href="{{ route('clases.historial') }}">Historial de Clases</a></li>
       </ul>
-    </nav>
+    </li>
+    <li><a href="{{ route('asistencias.calendario') }}"><i class="fas fa-calendar-check"></i><span class="menu-text">Calendario Gym</span></a></li>
+    @if(in_array(auth()->user()->role, ['entrenador','superadmin']))
+      <li>
+        <a href="{{ route('qr-sessions.index') }}"><i class="fas fa-qrcode"></i><span class="menu-text">Sesiones QR</span></a>
+        <ul class="submenu">
+          <li><a href="{{ route('qr-sessions.index') }}">Ver Sesiones</a></li>
+          <li><a href="{{ route('qr-sessions.create') }}">Crear Sesión QR</a></li>
+        </ul>
+      </li>
+    @endif
+    <li><a href="{{ route('qr-sessions.enter-code') }}"><i class="fas fa-camera"></i><span class="menu-text">Escanear QR</span></a></li>
+    <li><a href="{{ route('qr-sessions.my-attendances') }}"><i class="fas fa-list-check"></i><span class="menu-text">Mis Asistencias</span></a></li>
+    <li><a href="{{ route('entradas-peso.index') }}"><i class="fas fa-weight-scale"></i><span class="menu-text">Entradas de Peso</span></a></li>
+  </ul>
+</nav>
+
 
     <!-- Top Navbar -->
     <nav class="top-navbar d-flex justify-content-between align-items-center">

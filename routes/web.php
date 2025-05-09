@@ -12,8 +12,7 @@ use App\Http\Controllers\ClaseController;
 use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\QrCodeSessionController;
-
-
+use App\Http\Controllers\EntradaPesoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -120,6 +119,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/qr/scan', [QrCodeSessionController::class, 'scanSubmit'])
          ->name('qr-sessions.scan-submit');
 
+    // Registro de pesos: ajustamos el parámetro para que sea {entrada}
+    Route::resource('entradas-peso', EntradaPesoController::class)
+         ->parameters(['entradas-peso' => 'entrada']);
 
 
 });
