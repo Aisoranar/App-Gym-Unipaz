@@ -9,15 +9,22 @@ class Recomendacion extends Model
 {
     use HasFactory;
 
+    protected $table = 'recomendacions';
+
     protected $fillable = [
-        'user_id',      // Destinatario (usuario)
-        'creado_por',   // Creador (entrenador o superadmin)
-        'contenido', 
-        'fecha'
+        'user_id',
+        'creado_por',
+        'contenido',
+        'fecha',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function creador()
+    {
+        return $this->belongsTo(User::class, 'creado_por');
     }
 }

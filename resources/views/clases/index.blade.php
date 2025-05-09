@@ -1,188 +1,134 @@
 @extends('layouts.app')
-@section('title', 'Clases')
+@section('title', 'Clases Grupales')
 @section('content')
-
+<!-- Estilos globales y personalizados -->
 <style>
   :root {
-    --primary: #0a192f;
-    --secondary: #112240;
-    --accent: #64ffda;
-    --bg-dark: #020c1b;
-    --white: #ccd6f6;
-    --card-gradient-start: #112240;
-    --card-gradient-end: #0a192f;
+    --primary: #001f3f;   /* Azul oscuro */
+    --secondary: #013220; /* Verde oscuro */
+    --white: #ffffff;
   }
-
   body {
-    background: var(--bg-dark);
-    color: var(--white);
+    background: var(--white);
+    color: var(--primary);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
   }
-
+  /* Gradiente animado en el encabezado */
   .animated-bg {
-    background: linear-gradient(135deg, var(--primary), var(--secondary));
-    background-size: 200% 200%;
-    animation: bgAnimation 8s ease infinite;
-    padding: 2.5rem 1rem;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    padding: 2rem 0;
     text-align: center;
-    border-bottom: 2px solid var(--accent);
-    margin-bottom: 2rem;
   }
-
-  @keyframes bgAnimation {
+  @keyframes gradientBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
-
   .header-index h1 {
-    font-size: 2.8rem;
-    margin-bottom: 0.5rem;
-    color: var(--white);
-    letter-spacing: 2px;
-  }
-
-  .header-index a {
-    background-color: var(--accent);
-    padding: 0.8rem 1.5rem;
-    color: var(--bg-dark);
-    text-decoration: none;
-    border-radius: 30px;
+    font-size: 2.5rem;
     font-weight: bold;
-    box-shadow: 0 4px 10px rgba(100, 255, 218, 0.3);
-    transition: background-color 0.3s, transform 0.3s;
-    display: inline-block;
+    color: var(--white);
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
   }
-
-  .header-index a:hover {
-    background-color: #52ffd3;
-    transform: translateY(-3px);
+  .header-index a.btn-primary {
+    background: var(--primary);
+    color: var(--white);
+    border: none;
+    border-radius: 2rem;
+    padding: 0.75rem 1.5rem;
+    margin-top: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
   }
-
+  .header-index a.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  }
+  /* Grilla de tarjetas fija 3x y alineada a la izquierda */
   .card-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    padding: 0 1rem;
+    margin-top: 2rem;
+    padding: 0;
+    justify-items: start;
   }
-
+  /* Tarjeta de clase */
   .card-item {
-    background: linear-gradient(135deg, var(--card-gradient-start), var(--card-gradient-end));
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+    background: var(--white);
+    border-radius: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    border: 1px solid rgba(100, 255, 218, 0.3);
+    color: var(--primary);
+    display: flex;
+    flex-direction: column;
   }
-
   .card-item:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
-
   .card-item header {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    padding: 1rem;
     text-align: center;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid rgba(204, 214, 246, 0.2);
-    margin-bottom: 1rem;
   }
-
   .card-item header h5 {
     margin: 0;
     font-size: 1.3rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--accent);
+    color: var(--white);
+    text-shadow: 0 0 5px rgba(0,0,0,0.3);
   }
-
   .clase-img-container {
     text-align: center;
-    margin: 0 auto 1rem;
+    margin: 1rem 0;
   }
-
   .clase-imagen {
-    width: 110px;
+    width: 100px;
     height: 70px;
     object-fit: cover;
-    border: 2px solid var(--accent);
-    border-radius: 8px;
+    border: 2px solid var(--primary);
+    border-radius: 0.5rem;
   }
-
   .detalle {
-    font-size: 0.85rem;
-    line-height: 1.4;
-    text-align: center;
-    margin-bottom: 0.8rem;
+    flex-grow: 1;
+    padding: 0 1rem;
   }
-
   .detalle p {
-    margin: 0.3rem 0;
-    color: var(--white);
+    margin: 0.5rem 0;
   }
-
   .card-actions {
+    padding: 1rem;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 0.5rem;
-    margin-top: 0.8rem;
   }
-
-  .btn-custom, .btn-danger {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.75rem;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    border-radius: 4px;
+  .btn-info, .btn-warning, .btn-danger {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: transform 0.3s;
   }
-
-  .btn-custom {
-    background-color: var(--accent);
-    color: var(--bg-dark);
-  }
-
-  .btn-custom:hover {
-    background-color: #52ffd3;
-    transform: translateY(-2px);
-  }
-
-  .btn-danger {
-    background-color: #e63946;
-    color: var(--white);
-  }
-
-  .btn-danger:hover {
-    background-color: #d62828;
-    transform: translateY(-2px);
-  }
-
-  @media (max-width: 768px) {
-    .card-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .card-grid {
-      grid-template-columns: 1fr;
-    }
+  .btn-info { background: var(--secondary); color: var(--white); border: none; }
+  .btn-warning { background: #ffc107; color: var(--primary); border: none; }
+  .btn-danger { background: #dc3545; color: var(--white); border: none; }
+  .btn-info:hover, .btn-warning:hover, .btn-danger:hover {
+    transform: scale(1.1);
   }
 </style>
 
-<div class="animated-bg header-index">
+<!-- Encabezado con fondo animado -->
+<div class="container-fluid animated-bg header-index">
   <h1>Clases Grupales</h1>
   @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']))
-    <a href="{{ route('clases.create') }}">
+    <a href="{{ route('clases.create') }}" class="btn-primary">
       <i class="fa-solid fa-plus"></i> Crear Nueva Clase
     </a>
   @endif
 </div>
 
+<!-- Listado de clases -->
 <div class="container py-4">
   <div class="card-grid">
     @foreach($clases as $clase)
@@ -212,22 +158,30 @@
           @else
             <p><strong>Inscritos:</strong> {{ $clase->participants->count() }}</p>
           @endif
-          <p>
-            <strong>Estado:</strong> 
+          <p><strong>Estado:</strong>
             <span style="color: {{ $clase->is_active ? 'green' : 'red' }}">
               {{ $clase->is_active ? 'Activa' : 'Inactiva' }}
             </span>
           </p>
         </div>
         <div class="card-actions">
-          <a href="{{ route('clases.show', $clase) }}" class="btn-custom" title="Ver">
-            <i class="fa-solid fa-eye"></i> Ver
+          <a href="{{ route('clases.show', $clase) }}" class="btn-info" title="Ver">
+            <i class="fa-solid fa-eye"></i>
           </a>
-          {{-- ... resto de acciones ... --}}
+          @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']))
+            <a href="{{ route('clases.edit', $clase) }}" class="btn-warning" title="Editar">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <form action="{{ route('clases.destroy', $clase) }}" method="POST" onsubmit="return confirm('¿Confirma eliminar esta clase?');" style="display:inline;">
+              @csrf @method('DELETE')
+              <button type="submit" class="btn-danger" title="Eliminar">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          @endif
         </div>
       </div>
     @endforeach
   </div>
 </div>
-
 @endsection

@@ -2,31 +2,55 @@
 @section('title', 'Registrar Ejercicio')
 @section('content')
 
-<!-- Estilos personalizados compartidos -->
+<!-- Estilos personalizados con fondo blanco y sección destacada -->
 <style>
-    .form-section {
-        background: #f8f9fa;
-        border-radius: 0.5rem;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        border-left: 4px solid #0d6efd;
-    }
-    .form-section h5 {
-        margin-bottom: 1.5rem;
-        font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
-        padding-bottom: 0.5rem;
-    }
-    label {
-        font-weight: 500;
-        margin-bottom: 0.3rem;
-    }
+  :root {
+    --primary: #001f3f;   /* Azul oscuro */
+    --secondary: #013220; /* Verde oscuro */
+    --white: #ffffff;
+  }
+  body {
+    background: var(--white);
+    color: var(--primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .form-section {
+    background: var(--white);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary);
+  }
+  .form-section h5 {
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 0.5rem;
+  }
+  label {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+  }
+  h1.page-title {
+    color: var(--primary);
+    margin-bottom: 1.5rem;
+  }
+  .btn-primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
 </style>
 
 <div class="container py-4">
-    <h1 class="mb-4 text-primary fw-bold">
+    <h1 class="page-title">
         <i class="fa-solid fa-dumbbell"></i> Registrar Nuevo Ejercicio
     </h1>
     <form method="POST" action="{{ route('ejercicios.store') }}">

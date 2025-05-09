@@ -1,20 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Ejercicios')
 @section('content')
-<!-- Estilos personalizados para un diseño dinámico y creativo -->
+<!-- Estilos personalizados con fondo blanco y tarjetas destacadas -->
 <style>
   :root {
     --primary: #001f3f;   /* Azul oscuro */
     --secondary: #013220; /* Verde oscuro */
-    --bg-dark: #000814;   /* Fondo muy oscuro */
     --white: #ffffff;
   }
   body {
-    background: var(--bg-dark);
-    color: var(--white);
+    background: var(--white);
+    color: var(--primary);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   }
-  /* Fondo animado sutil */
+  /* Fondo animado sutil solo en el header */
   .animated-bg {
     background: linear-gradient(45deg, var(--primary), var(--secondary));
     background-size: 400% 400%;
@@ -35,7 +34,8 @@
   .header-index h1 {
     font-size: 3rem;
     font-weight: bold;
-    text-shadow: 0 0 10px var(--white);
+    color: var(--white); /* Título en blanco */
+    text-shadow: 0 0 10px var(--primary);
   }
   .header-index a.btn {
     font-size: 1.1rem;
@@ -44,43 +44,26 @@
   }
   .header-index a.btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.4);
   }
-  /* Tarjetas de ejercicio */
+  /* Tarjetas de ejercicio con fondo blanco y sombra */
   .card-exercise {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--white);
     border: none;
     border-radius: 15px;
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
     position: relative;
     padding: 1.5rem;
+    color: var(--primary);
   }
   .card-exercise:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   }
   .card-exercise .card-body {
     position: relative;
     z-index: 2;
-  }
-  /* Overlay animado sutil en las tarjetas */
-  .card-exercise::before {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-    transform: rotate(45deg);
-    transition: opacity 0.3s;
-    opacity: 0;
-    z-index: 1;
-  }
-  .card-exercise:hover::before {
-    opacity: 1;
   }
   /* Botones de acción */
   .action-btn {
@@ -89,7 +72,6 @@
   }
   .action-btn:hover {
     transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
   }
 </style>
 
@@ -132,7 +114,6 @@
               <a href="{{ route('ejercicios.show', $ejercicio) }}" class="btn btn-info btn-sm action-btn" title="Ver">
                 <i class="fa-solid fa-eye"></i>
               </a>
-              <!-- Los botones de editar y eliminar solo se muestran para entrenadores y superadmin -->
               @if(Auth::user()->role === 'entrenador' || Auth::user()->role === 'superadmin')
                 <a href="{{ route('ejercicios.edit', $ejercicio) }}" class="btn btn-warning btn-sm action-btn" title="Editar">
                   <i class="fa-solid fa-pen-to-square"></i>

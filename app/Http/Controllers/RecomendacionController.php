@@ -9,130 +9,102 @@ use Illuminate\Support\Facades\Auth;
 
 class RecomendacionController extends Controller
 {
+    public function __construct()
+    {
+        // Requiere autenticación para todas las acciones
+        $this->middleware('auth');
+
+        // Solo entrenadores y superadmin/admin pueden crear, editar y eliminar
+        $this->middleware('role:entrenador|superadmin|admin')
+             ->only(['create', 'store', 'edit', 'update', 'destroy']);
+    }
+
     /**
-     * Muestra la lista de recomendaciones.
-     * - Si el usuario es de rol "usuario": se muestran las recomendaciones asignadas a él.
-     * - Si el usuario es "entrenador": se muestran las recomendaciones creadas por él.
-     * - Si es "superadmin": se muestran todas las recomendaciones.
+     * Display a listing of recommendations.
      */
     public function index(Request $request)
     {
         $search = $request->get('search');
-        $user = Auth::user();
-        
+        $user   = Auth::user();
+
         if ($user->role === 'usuario') {
             $query = Recomendacion::where('user_id', $user->id);
         } elseif ($user->role === 'entrenador') {
             $query = Recomendacion::where('creado_por', $user->id);
-        } else { // superadmin
+        } elseif (in_array($user->role, ['superadmin', 'admin'])) {
             $query = Recomendacion::query();
+        } else {
+            abort(403);
         }
-        
-        // Filtrar por el usuario destinatario (relación user)
+
         if ($search) {
             $query->whereHas('user', function ($q) use ($search) {
-                $q->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('email', 'LIKE', "%{$search}%");
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
+
         $recomendaciones = $query->orderBy('fecha', 'desc')->get();
         return view('recomendaciones.index', compact('recomendaciones', 'search'));
     }
 
     /**
-     * Muestra el formulario para crear una recomendación.
-     * Solo puede acceder un usuario con rol "entrenador" o "superadmin".
+     * Show the form for creating a new recommendation.
      */
     public function create()
     {
-        if (!in_array(Auth::user()->role, ['entrenador', 'superadmin'])) {
-            abort(403, 'No tienes permisos para crear una recomendación.');
-        }
-        // Obtiene todos los usuarios con rol "usuario" para asignarles la recomendación
         $usuarios = User::where('role', 'usuario')->get();
         return view('recomendaciones.create', compact('usuarios'));
     }
 
     /**
-     * Guarda una nueva recomendación.
-     * Solo los usuarios "entrenador" o "superadmin" pueden crear.
+     * Store a newly created recommendation.
      */
     public function store(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['entrenador', 'superadmin'])) {
-            abort(403, 'No tienes permisos para crear una recomendación.');
-        }
-
         $validated = $request->validate([
             'contenido' => 'required|string',
             'fecha'     => 'required|date',
-            'user_id'   => 'required|exists:users,id', // Usuario destinatario
+            'user_id'   => 'required|exists:users,id',
         ]);
 
-        // Verifica que el usuario seleccionado tenga rol "usuario"
-        $usuario = User::find($validated['user_id']);
-        if ($usuario->role !== 'usuario') {
-            return redirect()->back()->withErrors('El usuario seleccionado no tiene el rol adecuado.');
+        $dest = User::findOrFail($validated['user_id']);
+        if ($dest->role !== 'usuario') {
+            return back()->withErrors('El destinatario debe ser de rol usuario.');
         }
 
-        // Asigna el creador
         $validated['creado_por'] = Auth::id();
-
         Recomendacion::create($validated);
-        return redirect()->route('recomendaciones.index')->with('success', 'Recomendación creada correctamente.');
+
+        return redirect()->route('recomendaciones.index')
+                         ->with('success', 'Recomendación creada correctamente.');
     }
 
     /**
-     * Muestra los detalles de una recomendación.
-     * El acceso se permite si:
-     * - El usuario es "usuario" y la recomendación le fue asignada (user_id).
-     * - El usuario es "entrenador" y la recomendación fue creada por él.
-     * - El usuario es "superadmin" tiene acceso total.
+     * Display the specified recommendation.
      */
     public function show(Recomendacion $recomendacion)
     {
-        $user = Auth::user();
-        if ($user->role === 'usuario' && $recomendacion->user_id != $user->id) {
-            abort(403);
-        }
-        if ($user->role === 'entrenador' && $recomendacion->creado_por != $user->id) {
-            abort(403);
-        }
-        // Superadmin puede ver cualquier recomendación
+        $this->authorizeView($recomendacion);
         return view('recomendaciones.show', compact('recomendacion'));
     }
 
     /**
-     * Muestra el formulario para editar una recomendación.
-     * Solo el creador (entrenador o superadmin) podrá editar.
+     * Show the form for editing the specified recommendation.
      */
     public function edit(Recomendacion $recomendacion)
     {
-        $user = Auth::user();
-        if (!in_array($user->role, ['entrenador', 'superadmin'])) {
-            abort(403, 'No tienes permisos para editar esta recomendación.');
-        }
-        if ($user->role === 'entrenador' && $recomendacion->creado_por != $user->id) {
-            abort(403);
-        }
+        $this->authorizeXmanage($recomendacion);
         $usuarios = User::where('role', 'usuario')->get();
         return view('recomendaciones.edit', compact('recomendacion', 'usuarios'));
     }
 
     /**
-     * Actualiza la recomendación.
-     * Solo el creador (entrenador o superadmin) podrá actualizar.
+     * Update the specified recommendation in storage.
      */
     public function update(Request $request, Recomendacion $recomendacion)
     {
-        $user = Auth::user();
-        if (!in_array($user->role, ['entrenador', 'superadmin'])) {
-            abort(403, 'No tienes permisos para actualizar esta recomendación.');
-        }
-        if ($user->role === 'entrenador' && $recomendacion->creado_por != $user->id) {
-            abort(403);
-        }
+        $this->authorizeXmanage($recomendacion);
 
         $validated = $request->validate([
             'contenido' => 'required|string',
@@ -140,29 +112,51 @@ class RecomendacionController extends Controller
             'user_id'   => 'required|exists:users,id',
         ]);
 
-        $usuario = User::find($validated['user_id']);
-        if ($usuario->role !== 'usuario') {
-            return redirect()->back()->withErrors('El usuario seleccionado no tiene el rol adecuado.');
+        $dest = User::findOrFail($validated['user_id']);
+        if ($dest->role !== 'usuario') {
+            return back()->withErrors('El destinatario debe ser usuario.');
         }
 
         $recomendacion->update($validated);
-        return redirect()->route('recomendaciones.index')->with('success', 'Recomendación actualizada correctamente.');
+        return redirect()->route('recomendaciones.index')
+                         ->with('success', 'Recomendación actualizada correctamente.');
     }
 
     /**
-     * Elimina una recomendación.
-     * Solo el creador (entrenador o superadmin) podrá eliminar.
+     * Remove the specified recommendation from storage.
      */
     public function destroy(Recomendacion $recomendacion)
     {
+        $this->authorizeXmanage($recomendacion);
+        $recomendacion->delete();
+        return redirect()->route('recomendaciones.index')
+                         ->with('success', 'Recomendación eliminada correctamente.');
+    }
+
+    /**
+     * Autoriza la vista/show para usuarios y entrenadores/admin.
+     */
+    private function authorizeView(Recomendacion $rec)
+    {
         $user = Auth::user();
-        if (!in_array($user->role, ['entrenador', 'superadmin'])) {
-            abort(403, 'No tienes permisos para eliminar esta recomendación.');
-        }
-        if ($user->role === 'entrenador' && $recomendacion->creado_por != $user->id) {
+        if ($user->role === 'usuario' && $rec->user_id != $user->id) {
             abort(403);
         }
-        $recomendacion->delete();
-        return redirect()->route('recomendaciones.index')->with('success', 'Recomendación eliminada correctamente.');
+        if ($user->role === 'entrenador' && $rec->creado_por != $user->id) {
+            abort(403);
+        }
+        // superadmin/admin pueden ver todo
+    }
+
+    /**
+     * Autoriza edición, actualización y eliminación para entrenadores/admin.
+     */
+    private function authorizeXmanage(Recomendacion $rec)
+    {
+        $user = Auth::user();
+        if ($user->role === 'entrenador' && $rec->creado_por != $user->id) {
+            abort(403);
+        }
+        // superadmin/admin pueden editar/borrar cualquiera
     }
 }

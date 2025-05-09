@@ -1,84 +1,88 @@
 @extends('layouts.app')
 @section('title', 'Detalle de la Clase')
 @section('content')
-
+<!-- Estilos globales y personalizados -->
 <style>
+  :root {
+    --primary: #001f3f;
+    --secondary: #013220;
+    --white: #ffffff;
+  }
+  body {
+    background: var(--white);
+    color: var(--primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  /* Encabezado con gradiente animado */
+  .animated-bg {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    padding: 2rem 0;
+    text-align: center;
+  }
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .header-show h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--white);
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  /* Tarjeta principal */
   .clase-card {
-    background: linear-gradient(135deg, #0a192f, #112240);
-    border-radius: 1.5rem;
+    background: var(--white);
+    border-radius: 1rem;
     padding: 2rem;
-    color: #ccd6f6;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     max-width: 800px;
     margin: 2rem auto;
-    position: relative;
   }
-
-  .clase-card img {
-    width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .clase-info p {
-    margin-bottom: 0.8rem;
-    font-size: 1.1rem;
-  }
-
-  .actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .btn-custom {
-    background-color: #64ffda;
-    color: #0a192f;
-    font-weight: bold;
-    padding: 0.7rem 1.5rem;
-    border-radius: 1rem;
-    text-decoration: none;
-    transition: background 0.3s;
-  }
-
-  .btn-custom:hover {
-    background-color: #52e0c4;
-  }
-
+  .clase-card img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+  .clase-info p { margin-bottom: 0.8rem; font-size: 1.1rem; }
   .lista-participantes {
     margin-top: 1.5rem;
-    padding: 1rem;
-    background: #112240;
+    border-left: 4px solid var(--primary);
     border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    background: var(--white);
   }
-
-  .lista-participantes h4 {
-    margin-bottom: 0.5rem;
-    color: #64ffda;
+  .lista-participantes h4 { margin-bottom: 0.5rem; color: var(--primary); }
+  .actions { margin-top: 2rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .btn-primary, .btn-secondary {
+    padding: 0.7rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    color: var(--white);
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-weight: bold;
   }
-
-  .lista-participantes ul {
-    list-style: none;
-    padding-left: 0;
-  }
-
-  .lista-participantes li {
-    margin-bottom: 0.3rem;
-  }
+  .btn-primary { background: var(--primary); }
+  .btn-primary:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+  .btn-secondary { background: var(--secondary); }
+  .btn-secondary:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
 </style>
 
+<!-- Encabezado con fondo animado -->
+<div class="container-fluid animated-bg">
+  <div class="container header-show">
+    <h1>Detalle de la Clase</h1>
+  </div>
+</div>
+
+<!-- Contenido principal -->
 <div class="clase-card">
     @if($clase->imagen)
-    <img src="{{ asset('storage/' . $clase->imagen) }}" alt="Imagen de {{ $clase->titulo }}">
+      <img src="{{ asset('storage/' . $clase->imagen) }}" alt="Imagen de {{ $clase->titulo }}">
     @endif
 
     <div class="clase-info">
-        <h1 class="mb-4">{{ $clase->titulo }}</h1>
-
+        <h2 class="mb-4">{{ $clase->titulo }}</h2>
         <p><strong>Fecha:</strong> {{ \Carbon\Carbon::parse($clase->fecha)->format('d/m/Y') }}</p>
         <p><strong>Hora de Inicio:</strong> {{ \Carbon\Carbon::parse($clase->hora_inicio)->format('h:i A') }}</p>
         @if($clase->hora_fin)
@@ -98,13 +102,7 @@
             <p><strong>Inscritos:</strong> {{ $clase->participants->count() }}</p>
         @endif
         <p><strong>Entrenador:</strong> {{ $clase->user ? $clase->user->name : 'No asignado' }}</p>
-        <p><strong>Estado:</strong> 
-            @if($clase->is_active)
-                <span class="text-success">Activa</span>
-            @else
-                <span class="text-danger">Inactiva</span>
-            @endif
-        </p>
+        <p><strong>Estado:</strong> <span class=\"text-{{ $clase->is_active ? 'success' : 'danger' }}\">{{ $clase->is_active ? 'Activa' : 'Inactiva' }}</span></p>
     </div>
 
     <div class="lista-participantes">
@@ -125,27 +123,31 @@
             @if($clase->participants->contains(auth()->user()->id))
                 <form method="POST" action="{{ route('clases.leave', $clase) }}">
                     @csrf
-                    <button type="submit" class="btn-custom">Salir de la Clase</button>
+                    <button type="submit" class="btn-primary">Salir de la Clase</button>
                 </form>
             @else
                 <form method="POST" action="{{ route('clases.join', $clase) }}">
                     @csrf
-                    <button type="submit" class="btn-custom">Unirse a la Clase</button>
+                    <button type="submit" class="btn-primary">Unirse a la Clase</button>
                 </form>
             @endif
         @endif
 
-        @if(auth()->id() === $clase->user_id || auth()->user()->role === 'superadmin')
+        @if(in_array(auth()->user()->role, ['entrenador', 'superadmin']))
             <div class="d-flex gap-2">
-                <a href="{{ route('clases.edit', $clase) }}" class="btn-custom">Editar Clase</a>
+                <a href="{{ route('clases.edit', $clase) }}" class="btn-secondary">Editar Clase</a>
                 <form method="POST" action="{{ route('clases.destroy', $clase) }}">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-custom" onclick="return confirm('¿Seguro que quieres eliminar esta clase?')">Eliminar Clase</button>
+                    <button type="submit" class="btn-secondary" onclick="return confirm('¿Seguro que quieres eliminar esta clase?')">Eliminar Clase</button>
                 </form>
             </div>
         @endif
     </div>
 </div>
 
+<!-- Botón Volver -->
+<div class="container text-center mb-5">
+  <a href="{{ route('clases.index') }}" class="btn-secondary">&larr; Volver a Clases</a>
+</div>
 @endsection
