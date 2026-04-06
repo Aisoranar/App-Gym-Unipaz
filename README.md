@@ -6,103 +6,253 @@ Aplicación web para la gestión de un gimnasio: usuarios con distintos perfiles
 
 ---
 
-## Roles
+## Cómo leer este documento
 
-| Rol | Descripción |
-|-----|-------------|
-| `usuario` | Socio: ficha médica, rutinas asignadas, clases, calendario de asistencia, registro de peso, escaneo QR. |
-| `entrenador` | Gestiona ejercicios, rutinas, clases, recomendaciones, planes nutricionales y sesiones QR. |
-| `superadmin` | Permisos ampliados (p. ej. recomendaciones junto con entrenador). |
-
-El acceso a rutas sensibles se controla con middleware de rol (`CheckRole`) y, donde aplica, Spatie Permission.
+1. **Mapa de relaciones** — Cómo se conectan las tablas entre sí (diagrama).
+2. **Historias en flujo** — Qué hace cada tipo de usuario, paso a paso.
+3. **Casos de uso por “zona” del sistema** — Más visual que una lista plana.
+4. **Detalle por tabla** — Referencia rápida al final.
 
 ---
 
-## Casos de uso por tabla
+## Roles (actores)
 
-Cada sección describe **para qué sirve la tabla** en el dominio del gimnasio y **qué hace el sistema** con esos datos.
+| Rol | En una frase |
+|-----|----------------|
+| **Socio** (`usuario`) | Entrena, se inscribe a clases, registra peso y asistencia, usa QR. |
+| **Entrenador** (`entrenador`) | Crea contenido (ejercicios, rutinas, clases, planes, QR) y orienta al socio. |
+| **Superadmin** (`superadmin`) | Mismo eje que entrenador en varios módulos; permisos ampliados donde la app lo define. |
 
-### `users`
+El acceso HTTP se filtra con el middleware `CheckRole` (campo `role` en `users`). Spatie Permission añade tablas extra para roles/permisos granulares si los usas en código.
 
-- Registrar una cuenta nueva y autenticarse (login / logout).
-- Almacenar nombre, correo, contraseña y **rol** (`usuario`, `entrenador`, `superadmin`).
-- Ser el dueño de fichas médicas, ejercicios, rutinas, planes, inscripciones a clases y registros de peso y asistencia.
-- Actuar como **creador** de clases y sesiones QR (entrenador) o como **destinatario** de recomendaciones.
+---
 
-### `password_reset_tokens`
+## Mapa visual: cómo se relacionan las tablas
 
-- Permitir el flujo de **recuperación de contraseña** (Laravel): solicitud por email y restablecimiento seguro del acceso.
+El **usuario** (`users`) es el centro: casi todo “cuelga” de él. Las líneas indican relaciones lógicas (FK o pivotes).
 
-### `failed_jobs`
+```mermaid
+erDiagram
+  users {
+    bigint id PK
+    string email UK
+    enum role
+  }
 
-- Registrar trabajos en **cola** que fallaron para inspección y reintento (infraestructura Laravel).
+  ficha_medicas {
+    bigint id PK
+    bigint user_id FK
+  }
 
-### `personal_access_tokens`
+  ejercicios {
+    bigint id PK
+    bigint user_id FK
+  }
 
-- Almacenar **tokens de API** (Laravel Sanctum) si se usan para autenticación stateless o clientes externos.
+  rutinas {
+    bigint id PK
+    bigint user_id FK
+  }
 
-### `ficha_medicas`
+  clases {
+    bigint id PK
+    bigint user_id FK
+  }
 
-- Registrar datos personales, contacto, grupo sanguíneo, lateralidad e **historial de salud** (lesiones, alergias, enfermedades, actividad previa).
-- Vincular la información médica a un usuario concreto; al eliminarse el usuario, se eliminan sus fichas (cascade).
+  plan_nutricionals {
+    bigint id PK
+    bigint user_id FK
+  }
 
-### `ejercicios`
+  recomendacions {
+    bigint id PK
+    bigint user_id FK
+    bigint creado_por FK
+  }
 
-- Definir ejercicios con nombre, descripción, **nivel de dificultad**, grupo muscular, series, repeticiones, calorías aproximadas, duración y multimedia (foto/video).
-- Asociar cada ejercicio al usuario (típicamente quien lo crea o a quien se asigna según la lógica de negocio).
-- Componer rutinas vía la tabla pivote y referenciar asistencias puntuales.
+  asistencias {
+    bigint id PK
+    bigint user_id FK
+    bigint rutina_id FK
+    bigint ejercicio_id FK
+  }
 
-### `rutinas`
+  entradas_peso {
+    bigint id PK
+    bigint user_id FK
+  }
 
-- Crear **planes de entrenamiento** con nombre, descripción, días de la semana (JSON), fechas e intervalos horarios, estado, objetivo e intensidad.
-- Llevar notas y fechas de inicio/fin para seguimiento del programa.
+  qr_code_sessions {
+    bigint id PK
+    bigint user_id FK
+  }
 
-### `ejercicio_rutina` (pivote)
+  qr_scans {
+    bigint id PK
+    bigint usuario_id FK
+    bigint qr_code_session_id FK
+  }
 
-- **Incluir** varios ejercicios en una misma rutina y reutilizar un ejercicio en varias rutinas.
-- Mantener el orden lógico de la rutina según la aplicación (relación muchos a muchos).
+  users ||--o{ ficha_medicas : tiene
+  users ||--o{ ejercicios : crea_o_posee
+  users ||--o{ rutinas : posee
+  users ||--o{ plan_nutricionals : asignado
+  users ||--o{ clases : imparte
+  users ||--o{ qr_code_sessions : crea_sesion_qr
+  users ||--o{ entradas_peso : historial
+  users ||--o{ asistencias : dias_gimnasio
+  users ||--o{ qr_scans : escanea
+  users ||--o{ recomendacions : recibe_o_envia
 
-### `clases`
+  ejercicios }o--o{ rutinas : ejercicio_rutina
 
-- Programar **clases grupales**: título, descripción, objetivos, fecha, hora, nivel, cupo máximo e imagen.
-- Activar o desactivar la clase (`is_active`) y asociarla al entrenador que la crea (`user_id`).
+  users }o--o{ clases : clase_user_inscripcion
 
-### `clase_user` (pivote)
+  rutinas ||--o{ asistencias : opcional
+  ejercicios ||--o{ asistencias : opcional
+  qr_code_sessions ||--o{ qr_scans : valida
+```
 
-- **Inscribir** a un socio en una clase y **dar de baja** la inscripción sin duplicar la misma pareja clase–usuario.
+> **Nota:** En `recomendacions`, **`user_id`** es el socio que recibe el mensaje y **`creado_por`** es otro `users` (entrenador/admin) que lo escribe. La arista única hacia `users` en el diagrama resume esas dos FK.
 
-### `plan_nutricionals`
+**Lectura rápida:**
 
-- Definir **planes nutricionales** por usuario: nombre, descripción, calorías diarias y texto de recomendaciones.
+| Relación | Significado |
+|----------|-------------|
+| `users` → `ficha_medicas`, `entradas_peso`, … | Datos del **mismo socio** (salud, peso, asistencias). |
+| `users` → `clases` (como FK en `clases`) | El **entrenador** que crea la clase grupal. |
+| `clase_user` | Une **socios** con **clases** (muchos a muchos). |
+| `ejercicio_rutina` | Une **ejercicios** con **rutinas** (muchos a muchos). |
+| `recomendacions` | Dos FK a `users`: **quién recibe** y **quién escribe**. |
+| `asistencias` | Puede apuntar opcionalmente a **rutina** y/o **ejercicio** ese día. |
+| `qr_scans` | Conecta **socio** + **sesión QR** creada por entrenador. |
 
-### `recomendacions`
+---
 
-- Que un entrenador o administrador deje **mensajes o indicaciones** a un socio (`user_id`), con registro de quién las creó (`creado_por`) y la fecha.
+## Historias en flujo (casos de uso como recorrido)
 
-### `asistencias`
+### Socio: del registro al entrenamiento
 
-- Registrar **un día de asistencia** por usuario (único por `user_id` + `fecha`).
-- Opcionalmente vincular la asistencia a una **rutina** y/o un **ejercicio** concreto para trazabilidad en el calendario.
+```mermaid
+flowchart LR
+  A[Registro / Login] --> B[Ficha médica]
+  B --> C[Ver ejercicios y rutinas]
+  C --> D[Calendario de asistencias]
+  D --> E[Inscribirse a clases]
+  E --> F[Registro de peso e IMC]
+  F --> G[Escanear QR o código manual]
+  G --> H[Ver recomendaciones]
+```
 
-### `entradas_peso`
+### Entrenador: preparar el gimnasio digital
 
-- Registrar **peso actual**, peso ideal opcional, altura, **IMC calculado**, clasificación (`estado_peso`) y fecha del control.
-- Permitir seguimiento evolutivo del peso y composición corporal del socio.
+```mermaid
+flowchart TD
+  T[Login entrenador] --> T1[Crear / editar ejercicios]
+  T --> T2[Armar rutinas y enlazar ejercicios]
+  T --> T3[Programar clases grupales]
+  T --> T4[Planes nutricionales]
+  T --> T5[Recomendaciones a socios]
+  T --> T6[Sesiones QR: código + imagen]
+  T6 --> T7[Activar / desactivar sesión]
+```
 
-### `qr_code_sessions`
+### Asistencia con QR (idea general)
 
-- Que el entrenador cree una **sesión de asistencia** con nombre, actividad, código QR único e imagen generada.
-- Activar o desactivar la sesión y restringir la administración a rol entrenador.
+```mermaid
+sequenceDiagram
+  participant E as Entrenador
+  participant App as GymApp
+  participant S as Socio
+  E->>App: Crea sesión QR
+  App->>App: Guarda qr_code_sessions + código único
+  S->>App: Escanea o ingresa código
+  App->>App: Registra qr_scans
+  Note over S,App: Opcional: ver historial en mis-asistencias
+```
 
-### `qr_scans`
+---
 
-- Registrar que un **usuario escaneó** (o ingresó) un código válido: sesión asociada, carrera/dato adicional y fecha.
-- Completar el flujo de asistencia presencial sin depender solo del calendario manual.
+## Casos de uso por “zona” (vista creativa)
 
-### `permissions`, `roles`, `model_has_permissions`, `model_has_roles`, `role_has_permissions` (Spatie)
+Cada bloque agrupa **qué problema resuelve** en el mundo real.
 
-- Gestionar **permisos y roles** a nivel de paquete Spatie: asignar roles a modelos (p. ej. `User`) y permisos granulares o a roles.
-- Complementar el campo `role` de `users` cuando la aplicación use `HasRoles` / políticas basadas en permisos.
+### Zona identidad y acceso
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  USUARIO ENTRA AL SISTEMA                                │
+│  • Cuenta (users) + recuperación de clave                │
+│    (password_reset_tokens)                               │
+│  • Tokens API opcionales (personal_access_tokens)        │
+└─────────────────────────────────────────────────────────┘
+```
+
+### Zona salud y seguimiento físico
+
+```
+   [ficha_medicas]          [entradas_peso]
+         │                         │
+         │    historial médico     │    peso, altura, IMC
+         └───────────┬─────────────┘
+                     ▼
+              mismo user_id (users)
+```
+
+### Zona entrenamiento (catálogo + plan)
+
+- **`ejercicios`** — Biblioteca de movimientos (dificultad, series, multimedia).
+- **`rutinas`** — Programa por días/fechas/objetivo.
+- **`ejercicio_rutina`** — “Esta rutina lleva estos ejercicios” (N:M).
+
+### Zona grupo y comunidad
+
+- **`clases`** — Evento en fecha/hora con cupo.
+- **`clase_user`** — “Yo me apunto a esta clase”.
+
+### Zona coaching
+
+- **`plan_nutricionals`** — Calorías y pautas por socio.
+- **`recomendacions`** — Mensaje de entrenador/admin → socio (con autor y fecha).
+
+### Zona presencia (doble canal)
+
+| Canal | Tabla principal | Idea |
+|-------|-----------------|------|
+| Calendario manual | `asistencias` | Marca día; puede ligar rutina/ejercicio. |
+| QR en sala | `qr_code_sessions` + `qr_scans` | Sesión creada por entrenador; el socio valida con código. |
+
+### Zona permisos avanzados (Spatie)
+
+Tablas `permissions`, `roles`, `model_has_*`, `role_has_permissions`: modelo **rol + permiso** del paquete, útil si amplías reglas más allá del enum `role` en `users`.
+
+### Zona sistema (cola)
+
+- **`failed_jobs`** — Depuración de trabajos en cola que fallaron.
+
+---
+
+## Referencia por tabla (detalle)
+
+| Tabla | Casos de uso típicos |
+|-------|----------------------|
+| `users` | Alta, login, rol, dueño de casi todos los registros del socio o del entrenador. |
+| `password_reset_tokens` | Flujo “olvidé mi contraseña”. |
+| `failed_jobs` | Inspección de errores en colas. |
+| `personal_access_tokens` | Autenticación API con Sanctum. |
+| `ficha_medicas` | Datos personales y antecedentes para entrenar con seguridad. |
+| `ejercicios` | CRUD de movimientos; se enlazan a rutinas vía pivote. |
+| `rutinas` | Programas con días JSON, fechas, estado, objetivo. |
+| `ejercicio_rutina` | Composición N:M rutina ↔ ejercicio. |
+| `clases` | Clases grupales creadas por entrenador (`user_id`). |
+| `clase_user` | Inscripción N:M usuario ↔ clase. |
+| `plan_nutricionals` | Plan nutricional por `user_id`. |
+| `recomendacions` | Mensaje a `user_id` desde `creado_por`. |
+| `asistencias` | Un registro por día y usuario; FK opcionales a rutina/ejercicio. |
+| `entradas_peso` | Evolución de peso, IMC y clasificación. |
+| `qr_code_sessions` | Sesión con código único e imagen QR (entrenador). |
+| `qr_scans` | Confirmación de asistencia vinculada a sesión y usuario. |
+| Spatie (`permissions`, `roles`, …) | Permisos y roles a nivel de paquete sobre modelos. |
 
 ---
 
@@ -112,8 +262,8 @@ Cada sección describe **para qué sirve la tabla** en el dominio del gimnasio y
 - Copiar `.env`, configurar base de datos y ejecutar `php artisan migrate` (y seeders si aplica).
 - `php artisan key:generate` y `php artisan serve` para desarrollo.
 
-Consulta la [documentación oficial de Laravel](https://laravel.com/docs) para detalles de despliegue y entorno.
+Más detalle en la [documentación de Laravel](https://laravel.com/docs).
 
 ## Licencia
 
-Este proyecto utiliza el framework Laravel, publicado bajo la [licencia MIT](https://opensource.org/licenses/MIT).
+El framework Laravel se publica bajo la [licencia MIT](https://opensource.org/licenses/MIT).
