@@ -6,8 +6,8 @@
  <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GymApp - @yield('title')</title>
 
-<!-- Archivo CSS principal -->
-<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+<!-- Archivo CSS principal (desactivado - no existe) -->
+<!-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> -->
 
 <!-- Bootstrap CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -16,13 +16,10 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1/font/bootstrap-icons.css" rel="stylesheet">
 
 <!-- FontAwesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
 
 <!-- FullCalendar estilos -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-
-<!-- Bootstrap Bundle JS (incluye Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoA1X6VjOeiBQ8tM0Hn7GZ0eU56fnq9Y4GEqAXe1l49QK3HiT0S6HDy8Fq1GL4G9" crossorigin="anonymous"></script>
 
   @yield('styles')
 
@@ -140,17 +137,9 @@
   </div>
 
     <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-HoA1X6VjOeiBQ8tM0Hn7GZ0eU56fnq9Y4GEqAXe1l49QK3HiT0S6HDy8Fq1GL4G9" crossorigin="anonymous"></script>
-  <!-- Script APP principal -->
-  <script src="{{ asset('js/app.js') }}"></script>
-  <!-- Kit FontAwesome -->
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <!-- Scripts específicos de cada vista -->
   @yield('scripts')
-
-  <!-- Toggle sidebar -->
-  <script src="{{ asset('js/app.js') }}"></script>
-<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
 <script>
   // Mostrar/ocultar toggle escritorio según ancho
