@@ -42,7 +42,7 @@
     #sidebar .sidebar-header span { font-size: 1.2rem; transition: opacity 0.3s ease; }
     #sidebar.collapsed .sidebar-header span { opacity: 0; visibility: hidden; }
     /* Menú */
-    #sidebar ul.components { list-style: none; padding: 1rem 0; }
+    #sidebar ul.components { list-style: none; padding: 1rem 0; padding-bottom: 80px; }
     #sidebar ul li { margin: 0.3rem 0; }
     #sidebar ul li a { display: flex; align-items: center; padding: 0.9rem 1.5rem; color: rgba(255,255,255,0.9); text-decoration: none; border-radius: 4px; transition: background 0.3s; }
     #sidebar ul li a:hover { background: rgba(255,255,255,0.2); }
