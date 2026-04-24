@@ -55,7 +55,73 @@
     .top-navbar .btn-hamburger { background: none; border: none; font-size: 1.8rem; color: var(--text-color); margin-right: 1rem; display: inline-block; }
     .top-navbar .desktop-toggle { display: none; font-size: 1.8rem; margin-right: 1rem; cursor: pointer; transition: transform 0.3s; }
     @media (min-width: 768px) { .top-navbar .desktop-toggle { display: inline-block; } }
-    .top-navbar h4 { margin: 0; }
+
+    /* Navbar Brand - Logo GymApp */
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 0.25rem 0.5rem;
+      border-radius: 8px;
+    }
+
+    .navbar-brand:hover {
+      background: rgba(0, 51, 121, 0.05);
+      transform: translateY(-1px);
+    }
+
+    .navbar-brand:hover .brand-text {
+      color: var(--color-primary);
+    }
+
+    .navbar-brand:hover .brand-icon {
+      transform: scale(1.1);
+      color: var(--color-primary);
+    }
+
+    .brand-icon {
+      font-size: 1.6rem;
+      color: var(--color-primary);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .brand-icon i {
+      filter: drop-shadow(0 2px 4px rgba(0, 51, 121, 0.2));
+    }
+
+    .brand-text {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: -0.5px;
+      transition: all 0.3s ease;
+    }
+
+    /* User name in navbar */
+    .user-name {
+      font-size: 0.85rem;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Logout button */
+    .btn-outline-danger {
+      border-radius: 6px;
+      font-size: 0.8rem;
+      padding: 0.375rem 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline-danger:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
     /* Contenido */
     #content { margin-top: 60px; padding: 1.5rem; transition: margin-left 0.3s; }
     @media (min-width: 768px) { #content { margin-left: var(--sidebar-width); } #sidebar.collapsed ~ #content { margin-left: var(--sidebar-collapsed); } }
@@ -110,10 +176,25 @@
       <div class="d-flex align-items-center">
         <button id="mobileToggle" class="btn-hamburger d-md-none"><i class="fas fa-bars"></i></button>
         <span id="desktopToggle" class="desktop-toggle d-none d-md-inline"><i class="fas fa-angle-double-left"></i></span>
-        <h4 class="mb-0 ms-2">GymApp</h4>
+
+        {{-- Logo GymApp con icono - clickable para home --}}
+        <a href="{{ route('home') }}" class="navbar-brand d-flex align-items-center gap-2 text-decoration-none">
+          <div class="brand-icon">
+            <i class="fas fa-dumbbell"></i>
+          </div>
+          <span class="brand-text">GymApp</span>
+        </a>
       </div>
+
       @auth
-      <form method="POST" action="{{ route('logout') }}"><@csrf<button class="btn btn-link text-danger">Cerrar Sesión</button></form>
+      <form method="POST" action="{{ route('logout') }}" class="d-flex align-items-center gap-2">
+        @csrf
+        <span class="user-name d-none d-md-block text-muted small">{{ auth()->user()->name }}</span>
+        <button type="submit" class="btn btn-outline-danger btn-sm d-flex align-items-center gap-1">
+          <i class="bi bi-box-arrow-right"></i>
+          <span class="d-none d-md-inline">Salir</span>
+        </button>
+      </form>
       @endauth
     </nav>
   @endif
