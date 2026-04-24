@@ -2,137 +2,99 @@
 @section('title', 'Rutinas')
 @section('content')
 
-<style>
-  :root {
-    --primary: #001f3f;
-    --secondary: #013220;
-    --bg-dark: #000814;
-    --white: #ffffff;
-  }
-  body {
-    background: var(--bg-dark);
-    color: var(--white);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .animated-bg {
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .header-index {
-    padding: 2rem 0;
-    text-align: center;
-  }
-  .header-index h1 {
-    font-weight: bold;
-    font-size: 2.5rem;
-  }
-  .btn-create {
-    background-color: var(--white);
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .btn-create:hover {
-    background-color: var(--primary);
-    color: var(--white);
-  }
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  .card-item {
-    background: var(--primary);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    transition: transform 0.3s, background 0.3s;
-  }
-  .card-item:hover {
-    transform: translateY(-10px);
-    background: var(--secondary);
-  }
-  .card-item h5 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
-  .card-item p {
-    color: #d1d1d1;
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-  }
-  .card-actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .btn-custom {
-    background-color: var(--secondary);
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1rem;
-    transition: background 0.3s;
-  }
-  .btn-custom:hover {
-    background-color: #026c3b;
-  }
-  .btn-danger {
-    padding: 0.5rem 1rem;
-    border-radius: 0;
-  }
-</style>
-
-<div class="animated-bg header-index">
-  <h1>Mis Rutinas</h1>
-  <a href="{{ route('rutinas.create') }}" class="btn btn-create mt-3">
-    <i class="fa-solid fa-plus"></i> Crear Nueva Rutina
-  </a>
-</div>
-
-<div class="container py-4">
-  <div class="card-grid">
-    @foreach($rutinas as $rutina)
-      <div class="card-item">
-        <h5>{{ $rutina->nombre }}</h5>
-        <p>
-          <strong>Fecha Inicio:</strong> 
-          {{ $rutina->fecha_inicio ? \Carbon\Carbon::parse($rutina->fecha_inicio)->format('d/m/Y') : 'No definida' }}
-        </p>
-        <p>
-          <strong>Fecha Fin:</strong> 
-          {{ $rutina->fecha_fin ? \Carbon\Carbon::parse($rutina->fecha_fin)->format('d/m/Y') : 'No definida' }}
-        </p>
-        <p>
-          <strong>Días:</strong> 
-          {{ $rutina->dias ? (is_array($rutina->dias) ? implode(', ', $rutina->dias) : $rutina->dias) : 'No especificado' }}
-        </p>
-        <div class="card-actions">
-          <a href="{{ route('rutinas.show', $rutina) }}" class="btn btn-custom btn-sm" title="Ver">
-            <i class="fa-solid fa-eye"></i> Ver
-          </a>
-          <a href="{{ route('rutinas.edit', $rutina) }}" class="btn btn-custom btn-sm" title="Editar">
-            <i class="fa-solid fa-pen-to-square"></i> Editar
-          </a>
-          <form action="{{ route('rutinas.destroy', $rutina) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar esta rutina?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-              <i class="fa-solid fa-trash"></i> Eliminar
-            </button>
-          </form>
-        </div>
-      </div>
-    @endforeach
+<!-- Header de página -->
+<div class="page-header">
+  <div>
+    <h1>
+      <i class="fas fa-running"></i>
+      Rutinas
+    </h1>
+    <p>Planifica tus entrenamientos semanales</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ route('rutinas.create') }}" class="btn-primary-gym">
+      <i class="fas fa-plus"></i>
+      <span class="d-none d-sm-inline">Nueva Rutina</span>
+    </a>
   </div>
 </div>
+
+<!-- Búsqueda -->
+<div class="gym-search">
+  <i class="fas fa-search"></i>
+  <input type="text" id="searchRutinas" placeholder="Buscar rutina...">
+</div>
+
+<!-- Grid de tarjetas -->
+<div class="cards-grid">
+  @forelse($rutinas as $rutina)
+    <div class="gym-card">
+      <div class="d-flex align-items-start justify-content-between mb-3">
+        <div class="gym-card-icon purple">
+          <i class="fas fa-calendar-week"></i>
+        </div>
+        @if($rutina->activa)
+          <span class="badge bg-success">Activa</span>
+        @endif
+      </div>
+      
+      <div class="gym-card-title">
+        {{ $rutina->nombre }}
+      </div>
+      
+      <div class="gym-card-text">
+        <div class="mb-1">
+          <i class="fas fa-play-circle text-muted me-2"></i>
+          <small>{{ $rutina->fecha_inicio ? \Carbon\Carbon::parse($rutina->fecha_inicio)->format('d/m/Y') : 'Sin fecha' }}</small>
+        </div>
+        <div class="mb-1">
+          <i class="fas fa-flag-checkered text-muted me-2"></i>
+          <small>{{ $rutina->fecha_fin ? \Carbon\Carbon::parse($rutina->fecha_fin)->format('d/m/Y') : 'Sin fin' }}</small>
+        </div>
+        <div>
+          <i class="fas fa-calendar-day text-muted me-2"></i>
+          <small>{{ $rutina->dias ? (is_array($rutina->dias) ? implode(', ', $rutina->dias) : $rutina->dias) : 'Sin días' }}</small>
+        </div>
+      </div>
+      
+      <div class="gym-card-actions">
+        <a href="{{ route('rutinas.show', $rutina) }}" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-eye"></i>
+        </a>
+        <a href="{{ route('rutinas.edit', $rutina) }}" class="btn btn-sm btn-outline-warning">
+          <i class="fas fa-edit"></i>
+        </a>
+        <form action="{{ route('rutinas.destroy', $rutina) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta rutina?');">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  @empty
+    <div class="col-12 text-center py-5">
+      <div class="mb-3">
+        <i class="fas fa-calendar-plus fa-3x text-muted"></i>
+      </div>
+      <h5 class="text-muted">No hay rutinas</h5>
+      <p class="text-muted mb-3">Crea tu primera rutina de entrenamiento</p>
+      <a href="{{ route('rutinas.create') }}" class="btn-primary-gym">
+        <i class="fas fa-plus me-2"></i>Crear Rutina
+      </a>
+    </div>
+  @endforelse
+</div>
+
+<script>
+  document.getElementById('searchRutinas')?.addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('.gym-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(term) ? '' : 'none';
+    });
+  });
+</script>
 
 @endsection

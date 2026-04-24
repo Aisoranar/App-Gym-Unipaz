@@ -2,140 +2,92 @@
 @section('title', 'Planes Nutricionales')
 @section('content')
 
-<!-- Estilos personalizados con fondo blanco y tarjetas destacadas -->
-<style>
-  :root {
-    --primary: #001f3f;   /* Azul oscuro */
-    --secondary: #013220; /* Verde oscuro */
-    --white: #ffffff;
-  }
-  body {
-    background: var(--white);
-    color: var(--primary);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  /* Encabezado con gradiente animado */
-  .animated-bg {
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-    padding: 2rem 0;
-    text-align: center;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  .header-index h1 {
-    font-weight: bold;
-    font-size: 2.5rem;
-    color: var(--white);
-    text-shadow: 0 0 5px rgba(0,0,0,0.3);
-  }
-  .header-index a.btn-custom {
-    background-color: var(--secondary);
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1rem;
-    margin-top: 1rem;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  .header-index a.btn-custom:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-  }
-  /* Grilla para las tarjetas */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  /* Tarjeta individual */
-  .card-item {
-    background: var(--white);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    color: var(--primary);
-  }
-  .card-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-  .card-item h5 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-  }
-  .card-item p {
-    font-size: 0.95rem;
-    margin-bottom: 1rem;
-  }
-  /* Acciones de los botones */
-  .card-actions {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .btn-custom-sm {
-    background-color: var(--secondary);
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1rem;
-    transition: transform 0.3s;
-  }
-  .btn-custom-sm:hover {
-    transform: scale(1.05);
-  }
-  .btn-danger-sm {
-    background-color: #dc3545;
-    color: var(--white);
-    border: none;
-    padding: 0.5rem 1rem;
-    transition: transform 0.3s;
-  }
-  .btn-danger-sm:hover {
-    transform: scale(1.05);
-  }
-</style>
-
-<!-- Encabezado con fondo animado -->
-<div class="container-fluid animated-bg header-index">
-  <h1>Planes Nutricionales</h1>
-  <a href="{{ route('planes.create') }}" class="btn-custom btn-custom-sm">
-    <i class="fa-solid fa-plus"></i> Crear Nuevo Plan
-  </a>
-</div>
-
-<!-- Contenedor organizado en columnas -->
-<div class="container py-4">
-  <div class="card-grid">
-    @foreach($planes as $plan)
-      <div class="card-item">
-        <h5>{{ $plan->nombre }}</h5>
-        <p><strong>Calorías Diarias:</strong> {{ $plan->calorias_diarias }}</p>
-        <div class="card-actions">
-          <a href="{{ route('planes.show', $plan) }}" class="btn-custom-sm btn-sm">
-            <i class="fa-solid fa-eye"></i>
-          </a>
-          <a href="{{ route('planes.edit', $plan) }}" class="btn-custom-sm btn-sm">
-            <i class="fa-solid fa-pen-to-square"></i>
-          </a>
-          <form action="{{ route('planes.destroy', $plan) }}" method="POST" style="display:inline;" onsubmit="return confirm('¿Estás seguro de eliminar este plan?');">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn-danger-sm btn-sm">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </form>
-        </div>
-      </div>
-    @endforeach
+<!-- Header de página -->
+<div class="page-header">
+  <div>
+    <h1>
+      <i class="fas fa-apple-alt"></i>
+      Nutrición
+    </h1>
+    <p>Planes alimenticios personalizados</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ route('planes.create') }}" class="btn-primary-gym">
+      <i class="fas fa-plus"></i>
+      <span class="d-none d-sm-inline">Nuevo Plan</span>
+    </a>
   </div>
 </div>
+
+<!-- Búsqueda -->
+<div class="gym-search">
+  <i class="fas fa-search"></i>
+  <input type="text" id="searchPlanes" placeholder="Buscar plan nutricional...">
+</div>
+
+<!-- Grid de tarjetas -->
+<div class="cards-grid">
+  @forelse($planes as $plan)
+    <div class="gym-card">
+      <div class="gym-card-icon teal">
+        <i class="fas fa-carrot"></i>
+      </div>
+      
+      <div class="gym-card-title">
+        {{ $plan->nombre }}
+      </div>
+      
+      <div class="gym-card-text">
+        <div class="mb-1">
+          <i class="fas fa-fire text-muted me-2"></i>
+          <strong>{{ $plan->calorias_diarias ?? '0' }}</strong> kcal/día
+        </div>
+        @if($plan->objetivo)
+          <div class="mb-1">
+            <i class="fas fa-bullseye text-muted me-2"></i>
+            <small>{{ $plan->objetivo }}</small>
+          </div>
+        @endif
+      </div>
+      
+      <div class="gym-card-actions">
+        <a href="{{ route('planes.show', $plan) }}" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-eye"></i>
+        </a>
+        <a href="{{ route('planes.edit', $plan) }}" class="btn btn-sm btn-outline-warning">
+          <i class="fas fa-edit"></i>
+        </a>
+        <form action="{{ route('planes.destroy', $plan) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar este plan?');">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  @empty
+    <div class="col-12 text-center py-5">
+      <div class="mb-3">
+        <i class="fas fa-utensils fa-3x text-muted"></i>
+      </div>
+      <h5 class="text-muted">No hay planes nutricionales</h5>
+      <p class="text-muted mb-3">Crea tu primer plan alimenticio</p>
+      <a href="{{ route('planes.create') }}" class="btn-primary-gym">
+        <i class="fas fa-plus me-2"></i>Crear Plan
+      </a>
+    </div>
+  @endforelse
+</div>
+
+<script>
+  document.getElementById('searchPlanes')?.addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('.gym-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(term) ? '' : 'none';
+    });
+  });
+</script>
 
 @endsection
