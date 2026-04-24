@@ -55,10 +55,14 @@ class EntradaPesoController extends Controller
     public function store(Request $request)
     {
         $datos = $request->validate([
-            'peso_actual_kg' => 'required|numeric|min:0',
-            'peso_ideal_kg'  => 'nullable|numeric|min:0',
-            'altura_cm'      => 'required|integer|min:0',
+            'peso_actual_kg' => 'required|numeric|min:1|max:300',
+            'peso_ideal_kg'  => 'nullable|numeric|min:1|max:300',
+            'altura_cm'      => 'required|integer|min:50|max:250',
             'fecha'          => 'required|date',
+        ], [
+            'altura_cm.min' => 'La altura debe ser al menos 50 cm (0.5 m).',
+            'altura_cm.max' => 'La altura no puede superar 250 cm (2.5 m).',
+            'peso_actual_kg.min' => 'El peso debe ser al menos 1 kg.',
         ]);
 
         [$imc, $estado] = $this->calcularImcEstado(
@@ -97,10 +101,13 @@ class EntradaPesoController extends Controller
         $this->authorize('update', $entrada);
 
         $datos = $request->validate([
-            'peso_actual_kg' => 'required|numeric|min:0',
-            'peso_ideal_kg'  => 'nullable|numeric|min:0',
-            'altura_cm'      => 'required|integer|min:0',
+            'peso_actual_kg' => 'required|numeric|min:1|max:300',
+            'peso_ideal_kg'  => 'nullable|numeric|min:1|max:300',
+            'altura_cm'      => 'required|integer|min:50|max:250',
             'fecha'          => 'required|date',
+        ], [
+            'altura_cm.min' => 'La altura debe ser al menos 50 cm (0.5 m).',
+            'altura_cm.max' => 'La altura no puede superar 250 cm (2.5 m).',
         ]);
 
         [$imc, $estado] = $this->calcularImcEstado(

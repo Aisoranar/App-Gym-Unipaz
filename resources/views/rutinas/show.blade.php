@@ -47,8 +47,12 @@
       <div class="show-label">Días seleccionados</div>
       <div class="show-value">
         @if($rutina->dias)
-          @foreach(is_array($rutina->dias) ? $rutina->dias : explode(',', $rutina->dias) as $dia)
-            <span class="badge bg-light text-dark border me-1">{{ trim($dia) }}</span>
+          @php
+            $diasArray = is_array($rutina->dias) ? $rutina->dias : json_decode($rutina->dias, true);
+            if (!is_array($diasArray)) $diasArray = [$rutina->dias];
+          @endphp
+          @foreach($diasArray as $dia)
+            <span class="badge bg-primary me-1 mb-1"><i class="fas fa-check-circle me-1"></i>{{ $dia }}</span>
           @endforeach
         @else
           <span class="text-muted">No especificado</span>
