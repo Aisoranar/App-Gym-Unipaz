@@ -25,7 +25,7 @@
     background: linear-gradient(135deg, rgba(0,51,121,0.95) 0%, rgba(0,86,168,0.85) 100%), 
                 url('{{ asset('storage/' . $ejercicio->foto) }}');
     background-size: cover;
-    background-position: center;
+    background-position: top;
     @else
     background: linear-gradient(135deg, #003379 0%, #0056a8 50%, #001a3d 100%);
     @endif
@@ -357,13 +357,18 @@
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    background: #f8f9fa;
   }
   
   .exercise-gallery img {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    max-height: 500px;
+    height: auto;
+    display: block;
+  }
+  
+  /* Hero background position top */
+  .exercise-hero-bg {
+    background-position: top !important;
   }
   
   /* No Media State */
@@ -439,28 +444,28 @@
     <div class="stat-chip-icon bg-primary bg-opacity-10 text-primary">
       <i class="fas fa-redo"></i>
     </div>
-    <div class="stat-chip-value">{{ $ejercicio->series ?? '-' }}</div>
+    <div class="stat-chip-value">{{ $ejercicio->series !== null ? $ejercicio->series : '-' }}</div>
     <div class="stat-chip-label">Series</div>
   </div>
   <div class="stat-chip">
     <div class="stat-chip-icon bg-success bg-opacity-10 text-success">
       <i class="fas fa-hashtag"></i>
     </div>
-    <div class="stat-chip-value">{{ $ejercicio->repeticiones ?? '-' }}</div>
+    <div class="stat-chip-value">{{ $ejercicio->repeticiones !== null ? $ejercicio->repeticiones : '-' }}</div>
     <div class="stat-chip-label">Repeticiones</div>
   </div>
   <div class="stat-chip">
     <div class="stat-chip-icon bg-warning bg-opacity-10 text-warning">
       <i class="fas fa-clock"></i>
     </div>
-    <div class="stat-chip-value">{{ $ejercicio->duracion ?? '-' }}</div>
+    <div class="stat-chip-value">{{ $ejercicio->duracion !== null ? $ejercicio->duracion : '-' }}</div>
     <div class="stat-chip-label">Minutos</div>
   </div>
   <div class="stat-chip">
     <div class="stat-chip-icon bg-danger bg-opacity-10 text-danger">
       <i class="fas fa-fire"></i>
     </div>
-    <div class="stat-chip-value">{{ $ejercicio->calorias_aprox ?? '-' }}</div>
+    <div class="stat-chip-value">{{ $ejercicio->calorias_aprox !== null ? $ejercicio->calorias_aprox : '-' }}</div>
     <div class="stat-chip-label">Calorías</div>
   </div>
 </div>

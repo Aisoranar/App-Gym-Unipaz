@@ -175,7 +175,12 @@
     </div>
   </div>
 
-  <form method="POST" action="{{ route('ejercicios.store') }}" enctype="multipart/form-data">
+  {{-- Debug info --}}
+  <div class="alert alert-info mb-3">
+    <small><strong>Debug:</strong> Method: POST | Action: {{ route('ejercicios.store') }} | CSRF: {{ csrf_token() ? 'OK' : 'MISSING' }}</small>
+  </div>
+
+  <form method="POST" action="{{ route('ejercicios.store') }}" enctype="multipart/form-data" id="ejercicioForm">
     @csrf
     
     {{-- Mostrar errores de validación --}}
@@ -305,7 +310,7 @@
               <label class="form-label fw-semibold">Series</label>
               <div class="input-group-custom">
                 <i class="fas fa-redo input-icon"></i>
-                <input type="number" name="series" class="form-control" placeholder="3" min="1">
+                <input type="number" name="series" class="form-control" placeholder="3" min="1" value="3">
               </div>
             </div>
             
@@ -313,7 +318,7 @@
               <label class="form-label fw-semibold">Repeticiones</label>
               <div class="input-group-custom">
                 <i class="fas fa-hashtag input-icon"></i>
-                <input type="number" name="repeticiones" class="form-control" placeholder="12" min="1">
+                <input type="number" name="repeticiones" class="form-control" placeholder="12" min="1" value="12">
               </div>
             </div>
             
@@ -321,7 +326,7 @@
               <label class="form-label fw-semibold">Duración (min)</label>
               <div class="input-group-custom">
                 <i class="fas fa-clock input-icon"></i>
-                <input type="number" name="duracion" class="form-control" placeholder="5" min="1">
+                <input type="number" name="duracion" class="form-control" placeholder="5" min="1" value="5">
               </div>
             </div>
             
@@ -329,7 +334,7 @@
               <label class="form-label fw-semibold">Calorías</label>
               <div class="input-group-custom">
                 <i class="fas fa-fire input-icon"></i>
-                <input type="number" name="calorias_aprox" class="form-control" placeholder="50" min="1">
+                <input type="number" name="calorias_aprox" class="form-control" placeholder="50" min="1" value="50">
               </div>
             </div>
           </div>
@@ -352,9 +357,16 @@
           <a href="{{ route('ejercicios.index') }}" class="btn btn-outline-secondary btn-lg">
             <i class="fas fa-times"></i> Cancelar
           </a>
-          <button type="submit" class="btn-create-exercise">
-            <i class="fas fa-plus-circle"></i> Crear Ejercicio
+          <button type="submit" class="btn-create-exercise" id="btnSubmit">
+            <i class="fas fa-plus-circle" id="btnIcon"></i>
+            <span id="btnText">Crear Ejercicio</span>
           </button>
+        </div>
+        <div id="loadingMessage" class="text-center mt-3 d-none">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2 text-muted">Subiendo archivos, por favor espera...</p>
         </div>
       </div>
     </div>
@@ -460,6 +472,38 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// Loading indicator al enviar formulario
+document.getElementById('ejercicioForm').addEventListener('submit', function(e) {
+  console.log('📤 Formulario submit detectado');
+  console.log('Action:', this.action);
+  console.log('Method:', this.method);
+  console.log('Enctype:', this.enctype);
+
+  const formData = new FormData(this);
+  console.log('Datos del formulario:');
+  for (let [key, value] of formData.entries()) {
+    if (value instanceof File) {
+      console.log('  ' + key + ':', value.name, 'Size:', value.size);
+    } else {
+      console.log('  ' + key + ':', value);
+    }
+  }
+
+  const btn = document.getElementById('btnSubmit');
+  const btnIcon = document.getElementById('btnIcon');
+  const btnText = document.getElementById('btnText');
+  const loading = document.getElementById('loadingMessage');
+
+  // Deshabilitar botón y mostrar loading
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btnIcon.className = 'fas fa-spinner fa-spin';
+  btnText.textContent = ' Creando...';
+  loading.classList.remove('d-none');
+
+  console.log('✅ Enviando al servidor...');
+});
 </script>
 
 @endsection
