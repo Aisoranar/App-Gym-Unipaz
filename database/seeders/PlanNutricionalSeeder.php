@@ -10,7 +10,8 @@ class PlanNutricionalSeeder extends Seeder
 {
     public function run(): void
     {
-        $user = User::first();
+        // Buscar específicamente el usuario "Usuario Demo"
+        $user = User::where('email', 'usuario@gmail.com')->first();
 
         if ($user) {
             PlanNutricional::create([

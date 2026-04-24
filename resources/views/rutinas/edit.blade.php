@@ -45,6 +45,12 @@
             @php
                 $diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
                 $diasSeleccionados = $rutina->dias ?? [];
+                if (is_string($diasSeleccionados)) {
+                    $diasSeleccionados = json_decode($diasSeleccionados, true) ?? [];
+                }
+                if (!is_array($diasSeleccionados)) {
+                    $diasSeleccionados = [];
+                }
             @endphp
             @foreach($diasSemana as $dia)
             <div class="form-check">

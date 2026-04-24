@@ -58,32 +58,52 @@
     @media (min-width: 768px) { #sidebar { left: 0; } }
     #sidebar.collapsed { width: var(--sidebar-collapsed); }
     
-    /* Header del Sidebar */
+    /* Header del Sidebar - Sticky y Mejorado */
     #sidebar .sidebar-header { 
+      position: sticky;
+      top: 0;
+      z-index: 1700;
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      padding: 1.5rem 1rem; 
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      background: rgba(0,0,0,0.1);
+      padding: 1.25rem 1rem; 
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      background: linear-gradient(135deg, rgba(0,51,121,0.95) 0%, rgba(0,26,61,0.98) 100%);
+      backdrop-filter: blur(10px);
     }
     #sidebar .sidebar-header i { 
       margin-right: 0.75rem; 
-      font-size: 1.5rem; 
-      width: 40px;
-      height: 40px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 10px;
+      font-size: 1.4rem; 
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    }
+    #sidebar .sidebar-header:hover i {
+      transform: scale(1.05) rotate(-5deg);
+      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 100%);
     }
     #sidebar .sidebar-header span { 
-      font-size: 1.25rem; 
+      font-size: 1.15rem; 
       font-weight: 700;
+      letter-spacing: 0.5px;
       transition: opacity 0.3s ease; 
     }
     #sidebar.collapsed .sidebar-header span { opacity: 0; visibility: hidden; }
+    #sidebar.collapsed .sidebar-header { justify-content: flex-start; padding: 1.25rem 0.75rem; }
+    #sidebar.collapsed .sidebar-header i { 
+      margin-right: 0;
+      width: 36px;
+      height: 36px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+    }
     
     /* Scrollbar personalizada */
     #sidebar::-webkit-scrollbar { width: 5px; }
@@ -195,11 +215,15 @@
       border-radius: 10px;
       margin-left: auto;
     }
-    /* Top navbar */
-    .top-navbar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--secondary-color); border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; padding: 0 1.5rem; z-index: 1600; }
+    /* Top navbar - ajustado al sidebar */
+    .top-navbar { position: fixed; top: 0; width: 100%; height: 60px; background: var(--secondary-color); border-bottom: 1px solid #e0e0e0; display: flex; align-items: center; padding: 0 1.5rem; z-index: 1600; transition: margin-left 0.3s, width 0.3s; }
     .top-navbar .btn-hamburger { background: none; border: none; font-size: 1.8rem; color: var(--text-color); margin-right: 1rem; display: inline-block; }
     .top-navbar .desktop-toggle { display: none; font-size: 1.8rem; margin-right: 1rem; cursor: pointer; transition: transform 0.3s; }
-    @media (min-width: 768px) { .top-navbar .desktop-toggle { display: inline-block; } }
+    @media (min-width: 768px) { 
+      .top-navbar .desktop-toggle { display: inline-block; }
+      .top-navbar { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); }
+      #sidebar.collapsed ~ .top-navbar { margin-left: var(--sidebar-collapsed); width: calc(100% - var(--sidebar-collapsed)); }
+    }
 
     /* Navbar Brand - Logo GymApp */
     .navbar-brand {
@@ -323,11 +347,12 @@
       content: '';
       position: absolute;
       top: -50%;
-      right: -20%;
-      width: 300px;
-      height: 300px;
+      right: -10%;
+      width: 200px;
+      height: 200px;
       background: rgba(255,255,255,0.1);
       border-radius: 50%;
+      z-index: 0;
     }
     
     .page-header h1 {
@@ -370,6 +395,8 @@
       gap: 0.75rem;
       flex-wrap: wrap;
       margin-top: 1rem;
+      position: relative;
+      z-index: 2;
     }
     
     @media (min-width: 768px) {
@@ -936,6 +963,7 @@
   <div id="content">
     <div class="container-fluid pt-4">
       @if(session('success'))<div class="alert alert-success">{{ session('success') }}</div>@endif
+      @if(session('error'))<div class="alert alert-danger">{{ session('error') }}</div>@endif
       @yield('content')
     </div>
   </div>

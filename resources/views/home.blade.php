@@ -460,7 +460,7 @@
     <!-- Welcome Header -->
     <div class="dashboard-header">
         <div class="welcome-text">
-            ¡Hola, {{ auth()->user()->name }}! 👋
+            ¡Hola, {{ auth()->user()->name }}! <i class="bi bi-emoji-smile"></i>
         </div>
         <div class="welcome-subtext">
             Listo para entrenar hoy? Consulta tu progreso y mantén tu racha activa.
@@ -471,7 +471,7 @@
     <div class="hero-banner">
         <img src="{{ asset('images/home/gymmapp.jpeg') }}" alt="GymApp - Tu compañero de entrenamiento">
         <div class="hero-overlay">
-            <div class="hero-title">💪 Transforma tu Vida</div>
+            <div class="hero-title"><i class="bi bi-lightning-charge"></i> Transforma tu Vida</div>
             <div class="hero-subtitle">Cada entrenamiento cuenta. ¡Sigue adelante!</div>
         </div>
     </div>
@@ -623,7 +623,7 @@
         <!-- Motivational CTA -->
         <div class="col-md-6">
             <div class="cta-section">
-                <div class="cta-title">💪 ¿Ya entrenaste hoy?</div>
+                <div class="cta-title"><i class="bi bi-lightning-charge"></i> ¿Ya entrenaste hoy?</div>
                 <div class="cta-text">Registra tu asistencia y mantén viva tu racha de {{ $currentStreak ?? '0' }} días</div>
                 <a href="{{ route('asistencias.calendario') }}" class="cta-button">
                     <i class="fas fa-plus-circle me-2"></i>Registrar Asistencia

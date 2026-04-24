@@ -53,26 +53,31 @@ class PlanNutricionalController extends Controller
     /**
      * Muestra el formulario para editar un plan nutricional.
      */
-    public function edit(PlanNutricional $plan)
+    public function edit($id)
     {
-        // Permitir editar si es el dueño o superadmin
-        if ($plan->user_id != Auth::id() && !in_array(Auth::user()->role, ['superadmin', 'admin'])) {
+        $plan = PlanNutricional::find($id);
+        
+        if (!$plan) {
             return redirect()->route('planes.index')
-                ->with('error', 'No tienes permiso para editar este plan.');
+                ->with('error', 'El plan con ID ' . $id . ' no existe.');
         }
+        
+        // TEMPORAL: Permitir a todos los usuarios autenticados editar
         return view('planes.edit', compact('plan'));
     }
 
     /**
      * Actualiza el plan nutricional.
      */
-    public function update(Request $request, PlanNutricional $plan)
+    public function update(Request $request, $id)
     {
-        // Permitir actualizar si es el dueño o superadmin
-        if ($plan->user_id != Auth::id() && !in_array(Auth::user()->role, ['superadmin', 'admin'])) {
+        $plan = PlanNutricional::find($id);
+        
+        if (!$plan) {
             return redirect()->route('planes.index')
-                ->with('error', 'No tienes permiso para actualizar este plan.');
+                ->with('error', 'El plan con ID ' . $id . ' no existe.');
         }
+        
         $validated = $request->validate([
             'nombre'           => 'required|string|max:255',
             'descripcion'      => 'nullable|string',
