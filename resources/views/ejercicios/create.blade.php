@@ -200,14 +200,11 @@
             <h5>Imagen del Ejercicio</h5>
           </div>
           
-          <div class="media-upload-zone">
-            <div class="upload-content" id="fotoUploadContent">
-              <i class="fas fa-cloud-upload-alt upload-icon"></i>
-              <div class="upload-text">Arrastra o haz clic para subir imagen</div>
-              <div class="upload-hint">JPG, PNG hasta 2MB · Muestra la posición inicial</div>
-            </div>
-            <div class="preview-container d-none" id="fotoPreview"></div>
-            <input type="file" name="foto" id="foto" class="d-none" accept="image/*" onchange="previewImage(this)">
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-image me-2"></i>Imagen del Ejercicio</label>
+            <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
+            <div class="form-text">Formatos: JPG, PNG, GIF (sin límite de tamaño)</div>
+            <div id="fotoPreview" class="mt-2 d-none"></div>
           </div>
         </div>
         
@@ -218,14 +215,11 @@
             <h5>Video Explicativo</h5>
           </div>
           
-          <div class="media-upload-zone">
-            <div class="upload-content" id="videoUploadContent">
-              <i class="fas fa-play-circle upload-icon"></i>
-              <div class="upload-text">Sube un video demostrativo</div>
-              <div class="upload-hint">MP4 hasta 10MB · Muestra la técnica correcta</div>
-            </div>
-            <div class="preview-container d-none" id="videoPreview"></div>
-            <input type="file" name="video" id="video" class="d-none" accept="video/mp4" onchange="previewVideo(this)">
+          <div class="mb-3">
+            <label class="form-label fw-semibold"><i class="fas fa-video me-2"></i>Video Explicativo</label>
+            <input type="file" name="video" id="video" class="form-control" accept="video/*">
+            <div class="form-text">Formatos: MP4, AVI, MOV (sin límite de tamaño)</div>
+            <div id="videoPreview" class="mt-2 d-none"></div>
           </div>
         </div>
       </div>
@@ -362,59 +356,28 @@
 </div>
 
 <script>
-// Prevenir que los clicks en las zonas de upload propaguen al formulario
-document.querySelectorAll('.media-upload-zone').forEach(zone => {
-  zone.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    const inputId = this.querySelector('input[type="file"]').id;
-    document.getElementById(inputId).click();
-  });
-});
-
-// Debug del formulario
-document.querySelector('form').addEventListener('submit', function(e) {
-  console.log('📝 Formulario enviado');
-  console.log('URL:', this.action);
-  console.log('Method:', this.method);
-  const formData = new FormData(this);
-  for (let [key, value] of formData.entries()) {
-    console.log(key + ':', value);
-  }
-});
-
-function previewImage(input) {
+// Preview de imagen
+document.getElementById('foto').addEventListener('change', function() {
   const preview = document.getElementById('fotoPreview');
-  const uploadContent = document.getElementById('fotoUploadContent');
-  const zone = input.closest('.media-upload-zone');
-  
-  if (input.files && input.files[0]) {
-    console.log('📷 Imagen seleccionada:', input.files[0].name, 'Size:', input.files[0].size);
+  if (this.files && this.files[0]) {
     const reader = new FileReader();
     reader.onload = function(e) {
-      preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+      preview.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="max-height:200px">';
       preview.classList.remove('d-none');
-      uploadContent.classList.add('d-none');
-      zone.classList.add('has-file');
     };
-    reader.readAsDataURL(input.files[0]);
+    reader.readAsDataURL(this.files[0]);
   }
-}
+});
 
-function previewVideo(input) {
+// Preview de video
+document.getElementById('video').addEventListener('change', function() {
   const preview = document.getElementById('videoPreview');
-  const uploadContent = document.getElementById('videoUploadContent');
-  const zone = input.closest('.media-upload-zone');
-  
-  if (input.files && input.files[0]) {
-    console.log('🎥 Video seleccionado:', input.files[0].name, 'Size:', input.files[0].size);
-    const url = URL.createObjectURL(input.files[0]);
-    preview.innerHTML = '<video controls><source src="' + url + '" type="video/mp4"></video>';
+  if (this.files && this.files[0]) {
+    const url = URL.createObjectURL(this.files[0]);
+    preview.innerHTML = '<video controls class="img-fluid rounded" style="max-height:200px"><source src="' + url + '" type="video/mp4"></video>';
     preview.classList.remove('d-none');
-    uploadContent.classList.add('d-none');
-    zone.classList.add('has-file');
   }
-}
+});
 </script>
 
 @endsection

@@ -61,8 +61,8 @@ class EjercicioController extends Controller
             'calorias_aprox'     => 'nullable|integer',
             'duracion'           => 'nullable|integer',
             'fecha'              => 'required|date',
-            'foto'               => 'nullable|image|max:2048',        // máximo 2MB
-            'video'              => 'nullable|mimetypes:video/mp4|max:10240', // máximo 10MB
+            'foto'               => 'nullable|image',        // sin límite de tamaño
+            'video'              => 'nullable|mimetypes:video/mp4,video/avi,video/quicktime,video/x-msvideo', // sin límite
         ]);
 
         $validated['user_id'] = Auth::id();
