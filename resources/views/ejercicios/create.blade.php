@@ -200,11 +200,14 @@
             <h5>Imagen del Ejercicio</h5>
           </div>
           
-          <div class="mb-3">
-            <label class="form-label fw-semibold"><i class="fas fa-image me-2"></i>Imagen del Ejercicio</label>
-            <input type="file" name="foto" id="foto" class="form-control" accept="image/*">
-            <div class="form-text">Formatos: JPG, PNG, GIF (sin límite de tamaño)</div>
-            <div id="fotoPreview" class="mt-2 d-none"></div>
+          <div class="media-upload-zone" id="fotoZone">
+            <input type="file" name="foto" id="foto" class="d-none" accept="image/*">
+            <div class="upload-content" id="fotoUploadContent">
+              <i class="fas fa-cloud-upload-alt upload-icon"></i>
+              <div class="upload-text">Arrastra o haz clic para subir imagen</div>
+              <div class="upload-hint">JPG, PNG, GIF (sin límite de tamaño)</div>
+            </div>
+            <div class="preview-container d-none" id="fotoPreview"></div>
           </div>
         </div>
         
@@ -215,11 +218,14 @@
             <h5>Video Explicativo</h5>
           </div>
           
-          <div class="mb-3">
-            <label class="form-label fw-semibold"><i class="fas fa-video me-2"></i>Video Explicativo</label>
-            <input type="file" name="video" id="video" class="form-control" accept="video/*">
-            <div class="form-text">Formatos: MP4, AVI, MOV (sin límite de tamaño)</div>
-            <div id="videoPreview" class="mt-2 d-none"></div>
+          <div class="media-upload-zone" id="videoZone">
+            <input type="file" name="video" id="video" class="d-none" accept="video/mp4,video/avi,video/quicktime,video/x-msvideo">
+            <div class="upload-content" id="videoUploadContent">
+              <i class="fas fa-play-circle upload-icon"></i>
+              <div class="upload-text">Arrastra o haz clic para subir video</div>
+              <div class="upload-hint">MP4, AVI, MOV (sin límite de tamaño)</div>
+            </div>
+            <div class="preview-container d-none" id="videoPreview"></div>
           </div>
         </div>
       </div>
@@ -356,28 +362,104 @@
 </div>
 
 <script>
-// Preview de imagen
-document.getElementById('foto').addEventListener('change', function() {
+// Configurar zona de imagen
+setupUploadZone('fotoZone', 'foto', 'fotoUploadContent', 'fotoPreview', previewImage);
+
+// Configurar zona de video
+setupUploadZone('videoZone', 'video', 'videoUploadContent', 'videoPreview', previewVideo);
+
+function setupUploadZone(zoneId, inputId, contentId, previewId, previewFunc) {
+  const zone = document.getElementById(zoneId);
+  const input = document.getElementById(inputId);
+  const content = document.getElementById(contentId);
+  const preview = document.getElementById(previewId);
+
+  // Click para abrir selector
+  zone.addEventListener('click', function(e) {
+    // No abrir si se hace click en el preview
+    if (e.target.closest('.preview-container')) return;
+    input.click();
+  });
+
+  // Drag enter
+  zone.addEventListener('dragenter', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.add('dragover');
+  });
+
+  // Drag over
+  zone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.add('dragover');
+  });
+
+  // Drag leave
+  zone.addEventListener('dragleave', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.remove('dragover');
+  });
+
+  // Drop
+  zone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.classList.remove('dragover');
+
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      input.files = files;
+      previewFunc(input);
+    }
+  });
+
+  // Change event
+  input.addEventListener('change', function() {
+    previewFunc(this);
+  });
+}
+
+function previewImage(input) {
   const preview = document.getElementById('fotoPreview');
-  if (this.files && this.files[0]) {
+  const content = document.getElementById('fotoUploadContent');
+
+  if (input.files && input.files[0]) {
     const reader = new FileReader();
     reader.onload = function(e) {
-      preview.innerHTML = '<img src="' + e.target.result + '" class="img-fluid rounded" style="max-height:200px">';
+      preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
       preview.classList.remove('d-none');
+      content.classList.add('d-none');
+      preview.closest('.media-upload-zone').classList.add('has-file');
     };
-    reader.readAsDataURL(this.files[0]);
+    reader.readAsDataURL(input.files[0]);
   }
-});
+}
 
-// Preview de video
-document.getElementById('video').addEventListener('change', function() {
+function previewVideo(input) {
   const preview = document.getElementById('videoPreview');
-  if (this.files && this.files[0]) {
-    const url = URL.createObjectURL(this.files[0]);
-    preview.innerHTML = '<video controls class="img-fluid rounded" style="max-height:200px"><source src="' + url + '" type="video/mp4"></video>';
+  const content = document.getElementById('videoUploadContent');
+
+  if (input.files && input.files[0]) {
+    const url = URL.createObjectURL(input.files[0]);
+    preview.innerHTML = '<video controls><source src="' + url + '" type="video/mp4"></video>';
     preview.classList.remove('d-none');
+    content.classList.add('d-none');
+    preview.closest('.media-upload-zone').classList.add('has-file');
   }
-});
+}
+
+// CSS para dragover
+const style = document.createElement('style');
+style.textContent = `
+  .media-upload-zone.dragover {
+    border-color: #28a745 !important;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%) !important;
+    transform: scale(1.02);
+  }
+`;
+document.head.appendChild(style);
 </script>
 
 @endsection
