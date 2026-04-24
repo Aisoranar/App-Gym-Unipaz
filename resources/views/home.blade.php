@@ -153,16 +153,24 @@
 
     .menu-item {
         background: white;
-        border-radius: 12px;
-        padding: 1.25rem;
+        border-radius: 10px;
+        padding: 0.875rem 0.5rem;
         text-decoration: none;
         color: inherit;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
         transition: all 0.3s ease;
         animation: scaleIn 0.4s ease-out;
         animation-fill-mode: both;
         text-align: center;
         border: 2px solid transparent;
+    }
+
+    @media (min-width: 768px) {
+        .menu-item {
+            border-radius: 12px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
     }
 
     .menu-item:nth-child(1) { animation-delay: 0.1s; }
@@ -188,15 +196,25 @@
     }
 
     .menu-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 14px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.75rem;
-        margin: 0 auto 0.75rem;
+        font-size: 1.35rem;
+        margin: 0 auto 0.5rem;
         transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+        .menu-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            font-size: 1.75rem;
+            margin: 0 auto 0.75rem;
+        }
     }
 
     .menu-item:hover .menu-icon {
@@ -214,13 +232,28 @@
 
     .menu-title {
         font-weight: 600;
-        font-size: 0.95rem;
-        margin-bottom: 0.25rem;
+        font-size: 0.8rem;
+        margin-bottom: 0.15rem;
+        line-height: 1.2;
+    }
+
+    @media (min-width: 768px) {
+        .menu-title {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
     }
 
     .menu-desc {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
         color: #6c757d;
+        line-height: 1.2;
+    }
+
+    @media (min-width: 768px) {
+        .menu-desc {
+            font-size: 0.75rem;
+        }
     }
 
     /* Recent Activity */
@@ -363,6 +396,7 @@
         width: 100%;
         height: 200px;
         object-fit: cover;
+        object-position: top center;
         display: block;
         transition: transform 0.5s ease;
     }
