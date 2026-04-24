@@ -103,15 +103,15 @@ class EjercicioController extends Controller
 
     public function edit(Ejercicio $ejercicio)
     {
-        // El middleware ya restringe este método, pero se verifica de forma extra.
-        abort_if($ejercicio->user_id != Auth::id(), 403);
+        // El middleware ya restringe este método (solo entrenadores/superadmin).
+        // Los entrenadores y superadmin pueden editar cualquier ejercicio.
 
         return view('ejercicios.edit', compact('ejercicio'));
     }
 
     public function update(Request $request, Ejercicio $ejercicio)
     {
-        abort_if($ejercicio->user_id != Auth::id(), 403);
+        // Los entrenadores y superadmin pueden actualizar cualquier ejercicio
 
         $validated = $request->validate([
             'nombre_ejercicio'   => 'required|string|max:255',
@@ -151,7 +151,7 @@ class EjercicioController extends Controller
 
     public function destroy(Ejercicio $ejercicio)
     {
-        abort_if($ejercicio->user_id != Auth::id(), 403);
+        // Los entrenadores y superadmin pueden eliminar cualquier ejercicio
 
         // Borrar archivos asociados, de existir
         if ($ejercicio->foto) {
