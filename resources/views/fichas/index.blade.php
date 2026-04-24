@@ -2,161 +2,100 @@
 @section('title', 'Fichas Médicas')
 @section('content')
 
-<style>
-  :root {
-    --primary: #001f3f;   /* Azul oscuro */
-    --secondary: #013220; /* Verde oscuro */
-    --bg-dark: #000814;   /* Fondo muy oscuro */
-    --white: #ffffff;
-  }
-  body {
-    background: var(--bg-dark);
-    color: var(--white);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  /* Fondo animado */
-  .animated-bg {
-    background: linear-gradient(45deg, var(--primary), var(--secondary));
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
-  }
-  @keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  /* Encabezado */
-  .header-index {
-    padding: 2rem 0;
-    text-align: center;
-  }
-  .header-index h1 {
-    font-weight: bold;
-    font-size: 2.5rem;
-  }
-  .btn-create {
-    background-color: var(--white);
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    transition: background-color 0.2s, color 0.2s;
-  }
-  .btn-create:hover {
-    background-color: var(--primary);
-    color: var(--white);
-  }
-  /* Tarjetas de fichas */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-top: 2rem;
-  }
-  .card-ficha {
-    border: none;
-    border-radius: 0.75rem;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
-    background: var(--primary);
-  }
-  .card-ficha:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
-    background: var(--secondary);
-  }
-  .card-ficha .card-header {
-    background-color: var(--secondary);
-    color: var(--white);
-    font-size: 1.1rem;
-    text-align: center;
-    padding: 1rem;
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
-  }
-  .card-ficha .card-body {
-    padding: 1rem;
-    font-size: 0.9rem;
-    color: #d1d1d1;
-  }
-  .detail-item {
-    margin-bottom: 0.5rem;
-  }
-  .detail-item i {
-    margin-right: 0.5rem;
-    color: var(--white);
-  }
-  .card-ficha .card-footer {
-    background-color: var(--bg-dark);
-    padding: 0.75rem;
-    border-bottom-left-radius: 0.75rem;
-    border-bottom-right-radius: 0.75rem;
-    text-align: center;
-  }
-  .action-btns {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
-  }
-  .action-btns a,
-  .action-btns form {
-    display: inline-block;
-  }
-</style>
-
-<!-- Encabezado con fondo animado -->
-<div class="animated-bg header-index">
-  <h1>
-    <i class="fa-solid fa-file-medical"></i> Fichas Médicas
-  </h1>
-  <a href="{{ route('fichas.create') }}" class="btn btn-create px-4 mt-3">
-    <i class="fa-solid fa-plus"></i> Crear Nueva Ficha
-  </a>
-</div>
-
-<div class="container py-4">
-  <div class="card-grid">
-    @foreach($fichas as $ficha)
-      <div class="card card-ficha">
-        <div class="card-header">
-          <i class="fa-solid fa-user"></i> {{ $ficha->nombre }} {{ $ficha->apellidos }}
-        </div>
-        <div class="card-body">
-          <div class="detail-item">
-            <i class="fa-solid fa-calendar-check"></i>
-            <strong>Fecha Nac.:</strong> {{ $ficha->fecha_nacimiento }}
-          </div>
-          <div class="detail-item">
-            <i class="fa-solid fa-hourglass-half"></i>
-            <strong>Edad:</strong> {{ $ficha->edad }}
-          </div>
-          <div class="detail-item">
-            <i class="fa-solid fa-venus-mars"></i>
-            <strong>Sexo:</strong> {{ $ficha->sexo }}
-          </div>
-          <div class="detail-item">
-            <i class="fa-solid fa-house"></i>
-            <strong>Domicilio:</strong> {{ $ficha->domicilio }}
-          </div>
-        </div>
-        <div class="card-footer">
-          <div class="action-btns">
-            <a href="{{ route('fichas.show', $ficha) }}" class="btn btn-info btn-sm" title="Ver">
-              <i class="fa-solid fa-eye"></i>
-            </a>
-            <a href="{{ route('fichas.edit', $ficha) }}" class="btn btn-warning btn-sm" title="Editar">
-              <i class="fa-solid fa-edit"></i>
-            </a>
-            <form action="{{ route('fichas.destroy', $ficha) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar esta ficha?');">
-              @csrf
-              @method('DELETE')
-              <button type="submit" class="btn btn-danger btn-sm" title="Eliminar">
-                <i class="fa-solid fa-trash"></i>
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    @endforeach
+<!-- Header de página -->
+<div class="page-header">
+  <div>
+    <h1>
+      <i class="fas fa-file-medical"></i>
+      Fichas Médicas
+    </h1>
+    <p>Gestiona la información médica de los usuarios</p>
+  </div>
+  <div class="page-actions">
+    <a href="{{ route('fichas.create') }}" class="btn-primary-gym">
+      <i class="fas fa-plus"></i>
+      <span class="d-none d-sm-inline">Nueva Ficha</span>
+    </a>
   </div>
 </div>
+
+<!-- Búsqueda -->
+<div class="gym-search">
+  <i class="fas fa-search"></i>
+  <input type="text" id="searchFichas" placeholder="Buscar por nombre, apellido o documento...">
+</div>
+
+<!-- Grid de tarjetas -->
+<div class="cards-grid">
+  @forelse($fichas as $ficha)
+    <div class="gym-card">
+      <div class="d-flex align-items-start justify-content-between mb-3">
+        <div class="gym-card-icon blue">
+          <i class="fas fa-user"></i>
+        </div>
+        <span class="badge bg-light text-dark border">
+          {{ $ficha->tipo_documento }} {{ $ficha->numero_documento }}
+        </span>
+      </div>
+      
+      <div class="gym-card-title">
+        {{ $ficha->nombre }} {{ $ficha->apellidos }}
+      </div>
+      
+      <div class="gym-card-text">
+        <div class="mb-1">
+          <i class="fas fa-calendar text-muted me-2"></i>
+          <small>{{ $ficha->fecha_nacimiento }} · {{ $ficha->edad }} años</small>
+        </div>
+        <div class="mb-1">
+          <i class="fas fa-venus-mars text-muted me-2"></i>
+          <small>{{ $ficha->sexo }}</small>
+        </div>
+        <div>
+          <i class="fas fa-map-marker-alt text-muted me-2"></i>
+          <small class="text-truncate">{{ Str::limit($ficha->domicilio, 30) }}</small>
+        </div>
+      </div>
+      
+      <div class="gym-card-actions">
+        <a href="{{ route('fichas.show', $ficha) }}" class="btn btn-sm btn-outline-primary">
+          <i class="fas fa-eye"></i>
+        </a>
+        <a href="{{ route('fichas.edit', $ficha) }}" class="btn btn-sm btn-outline-warning">
+          <i class="fas fa-edit"></i>
+        </a>
+        <form action="{{ route('fichas.destroy', $ficha) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar esta ficha?');">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-sm btn-outline-danger">
+            <i class="fas fa-trash"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  @empty
+    <div class="col-12 text-center py-5">
+      <div class="mb-3">
+        <i class="fas fa-folder-open fa-3x text-muted"></i>
+      </div>
+      <h5 class="text-muted">No hay fichas médicas</h5>
+      <p class="text-muted mb-3">Comienza creando una nueva ficha</p>
+      <a href="{{ route('fichas.create') }}" class="btn-primary-gym">
+        <i class="fas fa-plus me-2"></i>Crear Ficha
+      </a>
+    </div>
+  @endforelse
+</div>
+
+<script>
+  // Búsqueda en tiempo real
+  document.getElementById('searchFichas')?.addEventListener('input', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('.gym-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = text.includes(term) ? '' : 'none';
+    });
+  });
+</script>
 
 @endsection
