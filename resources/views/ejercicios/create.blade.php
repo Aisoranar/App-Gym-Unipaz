@@ -175,11 +175,6 @@
     </div>
   </div>
 
-  {{-- Debug info --}}
-  <div class="alert alert-info mb-3">
-    <small><strong>Debug:</strong> Method: POST | Action: {{ route('ejercicios.store') }} | CSRF: {{ csrf_token() ? 'OK' : 'MISSING' }}</small>
-  </div>
-
   <form method="POST" action="{{ route('ejercicios.store') }}" enctype="multipart/form-data" id="ejercicioForm">
     @csrf
     
