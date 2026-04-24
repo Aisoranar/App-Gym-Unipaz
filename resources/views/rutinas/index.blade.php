@@ -45,15 +45,20 @@
       <div class="gym-card-text">
         <div class="mb-1">
           <i class="fas fa-play-circle text-muted me-2"></i>
-          <small>{{ $rutina->fecha_inicio ? \Carbon\Carbon::parse($rutina->fecha_inicio)->format('d/m/Y') : 'Sin fecha' }}</small>
+          <small>{{ $rutina->fecha_inicio ? $rutina->fecha_inicio->format('d/m/Y') : 'Sin fecha' }}</small>
         </div>
         <div class="mb-1">
           <i class="fas fa-flag-checkered text-muted me-2"></i>
-          <small>{{ $rutina->fecha_fin ? \Carbon\Carbon::parse($rutina->fecha_fin)->format('d/m/Y') : 'Sin fin' }}</small>
+          <small>{{ $rutina->fecha_fin ? $rutina->fecha_fin->format('d/m/Y') : 'Sin fin' }}</small>
         </div>
         <div>
-          <i class="fas fa-calendar-day text-muted me-2"></i>
-          <small>{{ $rutina->dias ? (is_array($rutina->dias) ? implode(', ', $rutina->dias) : $rutina->dias) : 'Sin días' }}</small>
+          @if($rutina->dias && is_array($rutina->dias))
+            @foreach($rutina->dias as $dia)
+              <span class="badge bg-light text-dark border me-1" style="font-size: 0.7rem;">{{ $dia }}</span>
+            @endforeach
+          @else
+            <small class="text-muted">Sin días</small>
+          @endif
         </div>
       </div>
       

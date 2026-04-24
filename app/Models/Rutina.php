@@ -25,7 +25,11 @@ class Rutina extends Model
     ];
 
     protected $casts = [
-        'dias' => 'array',   // Se castea a array para guardar la información en la columna JSON
+        'dias' => 'array',
+        'fecha_inicio' => 'date',
+        'fecha_fin' => 'date',
+        'hora_inicio' => 'datetime:H:i',
+        'hora_fin' => 'datetime:H:i',
     ];
 
     public function user()

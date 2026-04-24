@@ -29,19 +29,19 @@
   <div class="row">
     <div class="col-md-3 show-field">
       <div class="show-label">Fecha de inicio</div>
-      <div class="show-value">{{ $rutina->fecha_inicio ? \Carbon\Carbon::parse($rutina->fecha_inicio)->format('d/m/Y') : 'No definida' }}</div>
+      <div class="show-value">{{ $rutina->fecha_inicio ? $rutina->fecha_inicio->format('d/m/Y') : 'No definida' }}</div>
     </div>
     <div class="col-md-3 show-field">
       <div class="show-label">Fecha de fin</div>
-      <div class="show-value">{{ $rutina->fecha_fin ? \Carbon\Carbon::parse($rutina->fecha_fin)->format('d/m/Y') : 'No definida' }}</div>
+      <div class="show-value">{{ $rutina->fecha_fin ? $rutina->fecha_fin->format('d/m/Y') : 'No definida' }}</div>
     </div>
     <div class="col-md-3 show-field">
       <div class="show-label">Hora de inicio</div>
-      <div class="show-value">{{ $rutina->hora_inicio ? \Carbon\Carbon::parse($rutina->hora_inicio)->format('H:i') : 'No definida' }}</div>
+      <div class="show-value">{{ $rutina->hora_inicio ? $rutina->hora_inicio->format('H:i') : 'No definida' }}</div>
     </div>
     <div class="col-md-3 show-field">
       <div class="show-label">Hora de fin</div>
-      <div class="show-value">{{ $rutina->hora_fin ? \Carbon\Carbon::parse($rutina->hora_fin)->format('H:i') : 'No definida' }}</div>
+      <div class="show-value">{{ $rutina->hora_fin ? $rutina->hora_fin->format('H:i') : 'No definida' }}</div>
     </div>
     <div class="col-12 show-field">
       <div class="show-label">Días seleccionados</div>

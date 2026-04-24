@@ -55,8 +55,10 @@ class PlanNutricionalController extends Controller
      */
     public function edit(PlanNutricional $plan)
     {
-        if ($plan->user_id != Auth::id()) {
-            abort(403);
+        // Permitir editar si es el dueño o superadmin
+        if ($plan->user_id != Auth::id() && !in_array(Auth::user()->role, ['superadmin', 'admin'])) {
+            return redirect()->route('planes.index')
+                ->with('error', 'No tienes permiso para editar este plan.');
         }
         return view('planes.edit', compact('plan'));
     }
@@ -66,8 +68,10 @@ class PlanNutricionalController extends Controller
      */
     public function update(Request $request, PlanNutricional $plan)
     {
-        if ($plan->user_id != Auth::id()) {
-            abort(403);
+        // Permitir actualizar si es el dueño o superadmin
+        if ($plan->user_id != Auth::id() && !in_array(Auth::user()->role, ['superadmin', 'admin'])) {
+            return redirect()->route('planes.index')
+                ->with('error', 'No tienes permiso para actualizar este plan.');
         }
         $validated = $request->validate([
             'nombre'           => 'required|string|max:255',
@@ -84,8 +88,10 @@ class PlanNutricionalController extends Controller
      */
     public function destroy(PlanNutricional $plan)
     {
-        if ($plan->user_id != Auth::id()) {
-            abort(403);
+        // Permitir eliminar si es el dueño o superadmin
+        if ($plan->user_id != Auth::id() && !in_array(Auth::user()->role, ['superadmin', 'admin'])) {
+            return redirect()->route('planes.index')
+                ->with('error', 'No tienes permiso para eliminar este plan.');
         }
         $plan->delete();
         return redirect()->route('planes.index')->with('success', 'Plan Nutricional eliminado correctamente.');
