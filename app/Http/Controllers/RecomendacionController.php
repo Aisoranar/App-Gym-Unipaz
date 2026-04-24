@@ -85,7 +85,7 @@ class RecomendacionController extends Controller
      */
     public function show(Recomendacion $recomendacion)
     {
-        $this->authorizeView($recomendacion);
+        // Todos los usuarios autenticados pueden ver cualquier recomendación
         return view('recomendaciones.show', compact('recomendacion'));
     }
 
@@ -135,17 +135,30 @@ class RecomendacionController extends Controller
 
     /**
      * Autoriza la vista/show para usuarios y entrenadores/admin.
+     * Retorna true si está autorizado, o un RedirectResponse si no.
      */
     private function authorizeView(Recomendacion $rec)
     {
         $user = Auth::user();
+        
+        // Superadmin/admin pueden ver todo
+        if (in_array($user->role, ['superadmin', 'admin'])) {
+            return true;
+        }
+        
+        // Usuario solo puede ver sus propias recomendaciones
         if ($user->role === 'usuario' && $rec->user_id != $user->id) {
-            abort(403);
+            return redirect()->route('recomendaciones.index')
+                ->with('error', 'No tienes permiso para ver esta recomendación.');
         }
+        
+        // Entrenador solo puede ver las que él creó
         if ($user->role === 'entrenador' && $rec->creado_por != $user->id) {
-            abort(403);
+            return redirect()->route('recomendaciones.index')
+                ->with('error', 'No tienes permiso para ver esta recomendación.');
         }
-        // superadmin/admin pueden ver todo
+        
+        return true;
     }
 
     /**

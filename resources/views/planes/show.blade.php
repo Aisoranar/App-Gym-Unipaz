@@ -52,9 +52,11 @@
   <a href="{{ route('planes.index') }}" class="btn-back">
     <i class="fas fa-arrow-left"></i> Volver
   </a>
-  <a href="{{ route('planes.edit', $plan) }}" class="btn-edit">
-    <i class="fas fa-edit"></i> Editar
-  </a>
+  @if($plan->user_id == Auth::id() || in_array(Auth::user()->role, ['superadmin', 'admin']))
+    <a href="{{ route('planes.edit', ['plan' => $plan->id]) }}" class="btn-edit">
+      <i class="fas fa-edit"></i> Editar
+    </a>
+  @endif
 </div>
 
 @endsection

@@ -46,9 +46,7 @@ class PlanNutricionalController extends Controller
      */
     public function show(PlanNutricional $plan)
     {
-        if ($plan->user_id != Auth::id()) {
-            abort(403);
-        }
+        // Todos los usuarios autenticados pueden ver cualquier plan
         return view('planes.show', compact('plan'));
     }
 

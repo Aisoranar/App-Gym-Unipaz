@@ -31,15 +31,15 @@
   <div class="row">
     <div class="col-md-4 show-field">
       <div class="show-label">Fecha</div>
-      <div class="show-value">{{ $recomendacion->fecha ?? $recomendacion->created_at->format('d/m/Y') }}</div>
+      <div class="show-value">{{ $recomendacion->fecha ?? ($recomendacion->created_at ? $recomendacion->created_at->format('d/m/Y') : 'Sin fecha') }}</div>
     </div>
     <div class="col-md-4 show-field">
       <div class="show-label">Creado por</div>
-      <div class="show-value">{{ $recomendacion->creador->name ?? 'Entrenador' }}</div>
+      <div class="show-value">{{ optional($recomendacion->creador)->name ?? 'Entrenador' }}</div>
     </div>
     <div class="col-md-4 show-field">
       <div class="show-label">Para</div>
-      <div class="show-value">{{ $recomendacion->user->name ?? 'Usuario' }}</div>
+      <div class="show-value">{{ optional($recomendacion->user)->name ?? 'Usuario' }}</div>
     </div>
   </div>
 </div>
@@ -50,7 +50,7 @@
     <i class="fas fa-arrow-left"></i> Volver
   </a>
   @if(in_array(Auth::user()->role, ['entrenador', 'superadmin']) && (Auth::user()->role === 'superadmin' || Auth::id() == $recomendacion->creado_por))
-    <a href="{{ route('recomendaciones.edit', $recomendacion) }}" class="btn-edit">
+    <a href="{{ route('recomendaciones.edit', ['recomendacion' => $recomendacion->id]) }}" class="btn-edit">
       <i class="fas fa-edit"></i> Editar
     </a>
   @endif
