@@ -1,0 +1,19 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Si la URL no empieza con /public/, redirigir todo a /public/
+    RewriteCond %{REQUEST_URI} !^/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Denegar acceso a archivos sensibles
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<IfModule !mod_rewrite.c>
+    # Si mod_rewrite no está disponible
+    RedirectMatch 302 ^/$ /public/
+</IfModule>
