@@ -45,6 +45,12 @@ class EjercicioController extends Controller
 
     public function store(Request $request)
     {
+        // DEBUG: Verificar método HTTP y datos recibidos
+        \Log::info('Ejercicio STORE - Method: ' . $request->method());
+        \Log::info('Ejercicio STORE - URL: ' . $request->url());
+        \Log::info('Ejercicio STORE - All data: ' . json_encode($request->except(['foto', 'video'])));
+        \Log::info('Ejercicio STORE - Has ID?: ' . ($request->has('id') ? 'YES: ' . $request->input('id') : 'NO'));
+
         $validated = $request->validate([
             'nombre_ejercicio'   => 'required|string|max:255',
             'descripcion'        => 'nullable|string',
@@ -71,10 +77,14 @@ class EjercicioController extends Controller
                 ->store('ejercicios/videos', 'public');
         }
 
-        Ejercicio::create($validated);
+        \Log::info('Ejercicio STORE - Creating new record with data: ' . json_encode($validated));
+
+        $ejercicio = Ejercicio::create($validated);
+
+        \Log::info('Ejercicio STORE - Created ID: ' . $ejercicio->id);
 
         return redirect()->route('ejercicios.index')
-                         ->with('success', 'Ejercicio registrado correctamente.');
+                         ->with('success', 'Ejercicio registrado correctamente. ID: ' . $ejercicio->id);
     }
 
     public function show(Ejercicio $ejercicio)

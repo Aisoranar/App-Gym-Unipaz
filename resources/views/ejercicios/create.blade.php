@@ -178,6 +178,18 @@
   <form method="POST" action="{{ route('ejercicios.store') }}" enctype="multipart/form-data">
     @csrf
     
+    {{-- Mostrar errores de validación --}}
+    @if($errors->any())
+      <div class="alert alert-danger mb-4">
+        <strong><i class="fas fa-exclamation-circle"></i> Errores en el formulario:</strong>
+        <ul class="mb-0 mt-2">
+          @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+    
     <div class="row">
       <!-- Columna izquierda: Media -->
       <div class="col-lg-5 mb-4">
@@ -188,7 +200,7 @@
             <h5>Imagen del Ejercicio</h5>
           </div>
           
-          <div class="media-upload-zone" onclick="document.getElementById('foto').click()">
+          <div class="media-upload-zone">
             <div class="upload-content" id="fotoUploadContent">
               <i class="fas fa-cloud-upload-alt upload-icon"></i>
               <div class="upload-text">Arrastra o haz clic para subir imagen</div>
@@ -206,7 +218,7 @@
             <h5>Video Explicativo</h5>
           </div>
           
-          <div class="media-upload-zone" onclick="document.getElementById('video').click()">
+          <div class="media-upload-zone">
             <div class="upload-content" id="videoUploadContent">
               <i class="fas fa-play-circle upload-icon"></i>
               <div class="upload-text">Sube un video demostrativo</div>
@@ -350,12 +362,34 @@
 </div>
 
 <script>
+// Prevenir que los clicks en las zonas de upload propaguen al formulario
+document.querySelectorAll('.media-upload-zone').forEach(zone => {
+  zone.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const inputId = this.querySelector('input[type="file"]').id;
+    document.getElementById(inputId).click();
+  });
+});
+
+// Debug del formulario
+document.querySelector('form').addEventListener('submit', function(e) {
+  console.log('📝 Formulario enviado');
+  console.log('URL:', this.action);
+  console.log('Method:', this.method);
+  const formData = new FormData(this);
+  for (let [key, value] of formData.entries()) {
+    console.log(key + ':', value);
+  }
+});
+
 function previewImage(input) {
   const preview = document.getElementById('fotoPreview');
   const uploadContent = document.getElementById('fotoUploadContent');
   const zone = input.closest('.media-upload-zone');
   
   if (input.files && input.files[0]) {
+    console.log('📷 Imagen seleccionada:', input.files[0].name, 'Size:', input.files[0].size);
     const reader = new FileReader();
     reader.onload = function(e) {
       preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
@@ -373,6 +407,7 @@ function previewVideo(input) {
   const zone = input.closest('.media-upload-zone');
   
   if (input.files && input.files[0]) {
+    console.log('🎥 Video seleccionado:', input.files[0].name, 'Size:', input.files[0].size);
     const url = URL.createObjectURL(input.files[0]);
     preview.innerHTML = '<video controls><source src="' + url + '" type="video/mp4"></video>';
     preview.classList.remove('d-none');
