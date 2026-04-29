@@ -84,10 +84,20 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Extraer código del contenido escaneado (puede ser URL completa o solo código)
+    function extractCode(scanned) {
+      scanned = scanned.trim();
+      // Si es URL completa como https://dominio.com/qr/scan/CODIGO
+      const match = scanned.match(/\/qr\/scan\/([^\/\?#]+)/);
+      if (match) return match[1];
+      // Si es solo el código
+      return scanned;
+    }
+
     const manualForm = document.getElementById('manual-form');
     manualForm.addEventListener('submit', e => {
       e.preventDefault();
-      const code = document.getElementById('codigo').value.trim();
+      const code = extractCode(document.getElementById('codigo').value);
       if (code) {
         window.location.href = `/qr/scan/${encodeURIComponent(code)}`;
       }
@@ -107,7 +117,8 @@
         { fps: 15, qrbox: { width: 250, height: 250 } },
         qrCodeMessage => {
           scanner.stop().then(() => {
-            window.location.href = `/qr/scan/${encodeURIComponent(qrCodeMessage)}`;
+            const code = extractCode(qrCodeMessage);
+            window.location.href = `/qr/scan/${encodeURIComponent(code)}`;
           });
         },
         errorMessage => { /* Ignorar errores menores */ }

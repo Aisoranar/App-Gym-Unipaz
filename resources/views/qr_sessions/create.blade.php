@@ -103,7 +103,8 @@
       </div>
 
       <div class="form-check mb-4">
-        <input class="form-check-input" type="checkbox" name="activo" id="activo" checked>
+        <input type="hidden" name="activo" value="0">
+        <input class="form-check-input" type="checkbox" name="activo" id="activo" value="1" checked>
         <label class="form-check-label form-label" for="activo">Activar esta sesión</label>
       </div>
 

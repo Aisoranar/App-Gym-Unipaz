@@ -96,13 +96,13 @@
       <div class="mb-4">
         <label class="form-label">Fecha y Hora (COL)</label>
         <input type="text" class="form-control" value="{{ $nowCO->isoFormat('DD/MM/YYYY hh:mm A') }}" disabled>
-        <input type="hidden" name="fecha" value="{{ $nowCO->toDateTimeString() }}">
+        <input type="hidden" name="fecha" value="{{ $nowCO->toDateString() }}">
       </div>
 
       <div class="d-grid gap-2 mb-3">
         <button type="submit" class="btn btn-success">Registrar Asistencia</button>
       </div>
-      <a href="{{ route('qr-sessions.show', $session->id) }}" class="btn btn-secondary w-100">&larr; Volver a Sesión</a>
+      <a href="{{ route('qr-sessions.enter-code') }}" class="btn btn-secondary w-100">&larr; Volver</a>
     </form>
   </div>
 </div>
